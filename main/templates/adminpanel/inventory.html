@@ -42,7 +42,7 @@
                     <tr>
                         <th class="p-5">Product Detail</th>
                         <th class="p-5">Base SKU</th>
-                        <th class="p-5 text-center">S/M/L/XL Stock</th>
+                        <th class="p-5 text-center">S / M / L / XL Stock</th>
                         <th class="p-5">Price</th>
                         <th class="p-5">Status</th>
                         <th class="p-5 text-right">Actions</th>
@@ -68,14 +68,19 @@
                         <td class="p-5 font-mono text-[10px] text-gray-400 italic">{{ product.sku_base }}</td>
 
                         <td class="p-5">
-                            <div class="flex justify-center gap-1">
-                                {% for stock in "s,m,l,xl"|split:"," %}
-                                    {% with current_stock=product|get_stock:stock %}
-                                    <span class="w-8 py-1.5 text-center {% if current_stock < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} border text-[9px] font-bold">
-                                        {{ current_stock }}
-                                    </span>
-                                    {% endwith %}
-                                {% endfor %}
+                            <div class="flex justify-center gap-1.5">
+                                <span class="w-9 py-1.5 text-center border {% if product.stock_s < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} text-[9px] font-bold">
+                                    {{ product.stock_s }}
+                                </span>
+                                <span class="w-9 py-1.5 text-center border {% if product.stock_m < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} text-[9px] font-bold">
+                                    {{ product.stock_m }}
+                                </span>
+                                <span class="w-9 py-1.5 text-center border {% if product.stock_l < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} text-[9px] font-bold">
+                                    {{ product.stock_l }}
+                                </span>
+                                <span class="w-9 py-1.5 text-center border {% if product.stock_xl < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} text-[9px] font-bold">
+                                    {{ product.stock_xl }}
+                                </span>
                             </div>
                         </td>
 
