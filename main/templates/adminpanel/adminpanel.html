@@ -5,84 +5,85 @@
 {% block content %}
 <main class="p-4 md:p-8 w-full max-w-[100vw] overflow-x-hidden">
     
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
-            <h1 class="text-2xl font-semibold uppercase tracking-tight">Control Center</h1>
-            <p class="text-sm text-gray-500">Real-time status of your luxury store.</p>
+            <h1 class="text-xl md:text-2xl font-semibold uppercase tracking-tight text-white">Control Center</h1>
+            <p class="text-[10px] md:text-sm text-gray-500 uppercase tracking-widest mt-1">Real-time status of your luxury store.</p>
         </div>
-        <div class="flex w-full sm:w-auto gap-2">
-            <a href="{% url 'add_product' %}" class="flex-1 sm:flex-none px-4 py-2 gold-bg text-black font-bold text-[10px] text-center uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-yellow-600/10">
+        <div class="flex w-full sm:w-auto">
+            <a href="{% url 'add_product' %}" class="w-full sm:w-auto px-6 py-3 gold-bg text-black font-bold text-[10px] text-center uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-yellow-600/10 active:scale-[0.98]">
                 + Add Product
             </a>
         </div>
     </header>
 
-    <div class="flex md:grid overflow-x-auto md:overflow-x-visible no-scrollbar gap-4 md:grid-cols-4 mb-10 pb-4">
-        <div class="card w-[75vw] md:w-auto p-6 min-w-[200px]">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">Total Sales</p>
-            <p class="text-2xl font-bold">${{ total_sales|floatformat:2 }}</p>
-            <p class="text-[10px] text-green-500 mt-2">↑ Database Live</p>
+    <div class="flex md:grid overflow-x-auto md:overflow-x-visible no-scrollbar gap-4 md:grid-cols-4 mb-10 pb-4 snap-x snap-mandatory">
+        
+        <div class="card shrink-0 w-[80vw] md:w-auto p-6 snap-center border border-white/5 bg-neutral-900/50">
+            <p class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 font-medium">Total Sales</p>
+            <p class="text-2xl font-bold text-white">₹{{ total_sales|floatformat:2 }}</p>
+            <p class="text-[9px] text-green-500 mt-3 flex items-center gap-1">
+                <span class="w-1 h-1 rounded-full bg-green-500 animate-pulse"></span> Database Live
+            </p>
         </div>
 
-        <div class="card w-[75vw] md:w-auto p-6 min-w-[200px]">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">Active Orders</p>
-            <p class="text-2xl font-bold">{{ active_orders_count }}</p>
-            <p class="text-[10px] gold-text mt-2 font-semibold">Needs fulfillment</p>
+        <div class="card shrink-0 w-[80vw] md:w-auto p-6 snap-center border border-white/5 bg-neutral-900/50">
+            <p class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 font-medium">Active Orders</p>
+            <p class="text-2xl font-bold text-white">{{ active_orders_count }}</p>
+            <p class="text-[9px] gold-text mt-3 font-bold uppercase tracking-tighter">Needs fulfillment</p>
         </div>
 
-        <div class="card w-[75vw] md:w-auto p-6 min-w-[200px]">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">Stock Alerts</p>
-            <p class="text-2xl font-bold {% if alert_count > 0 %}text-red-500{% endif %}">{{ alert_count }}</p>
-            <p class="text-[10px] text-gray-500 mt-2">Items below 5 units</p>
+        <div class="card shrink-0 w-[80vw] md:w-auto p-6 snap-center border border-white/5 bg-neutral-900/50">
+            <p class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 font-medium">Stock Alerts</p>
+            <p class="text-2xl font-bold {% if alert_count > 0 %}text-red-500{% else %}text-white{% endif %}">{{ alert_count }}</p>
+            <p class="text-[9px] text-gray-500 mt-3 uppercase">Below 5 units</p>
         </div>
 
-        <div class="card w-[75vw] md:w-auto p-6 min-w-[200px]">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">Customers</p>
-            <p class="text-2xl font-bold">{{ total_customers|default:"0" }}</p>
-            <p class="text-[10px] text-gray-500 mt-2">
+        <div class="card shrink-0 w-[80vw] md:w-auto p-6 snap-center border border-white/5 bg-neutral-900/50">
+            <p class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 font-medium">Customers</p>
+            <p class="text-2xl font-bold text-white">{{ total_customers|default:"0" }}</p>
+            <p class="text-[9px] text-gray-500 mt-3 uppercase tracking-tighter">
                 Live: <span class="text-green-500 font-bold">{{ live_visitors|default:"1" }} Active</span>
             </p>
         </div>
     </div>
 
-    <section class="card overflow-hidden">
-        <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <h3 class="text-sm font-semibold uppercase tracking-widest">Recent Transactions</h3>
-            <a href="{% url 'orders' %}" class="text-[10px] gold-text underline uppercase tracking-tighter">View All Orders</a>
+    <section class="card overflow-hidden bg-neutral-900/30 border border-white/5 rounded-sm">
+        <div class="p-5 md:p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+            <h3 class="text-[11px] md:text-sm font-semibold uppercase tracking-widest text-white">Recent Transactions</h3>
+            <a href="{% url 'orders' %}" class="text-[9px] gold-text underline uppercase tracking-widest font-bold">View All</a>
         </div>
         
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[700px]">
-                <thead class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-500">
+        <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-sm min-w-[600px]">
+                <thead class="bg-black/40 text-[9px] uppercase tracking-[0.2em] text-gray-500">
                     <tr>
-                        <th class="p-4">Order ID</th>
-                        <th class="p-4">Customer</th>
-                        <th class="p-4">Status</th>
-                        <th class="p-4">Method</th>
-                        <th class="p-4">Amount</th>
-                        <th class="p-4">Action</th>
+                        <th class="p-4 font-medium">Order ID</th>
+                        <th class="p-4 font-medium">Customer</th>
+                        <th class="p-4 font-medium">Status</th>
+                        <th class="p-4 font-medium text-right">Amount</th>
+                        <th class="p-4 font-medium text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for order in recent_orders %}
-                    <tr class="hover:bg-white/[0.02] transition">
-                        <td class="p-4 font-mono text-xs text-gray-400">#{{ order.order_id|default:order.id }}</td>
-                        <td class="p-4 font-medium">{{ order.full_name }}</td>
+                    <tr class="hover:bg-white/[0.02] transition-colors border-b border-white/[0.02]">
+                        <td class="p-4 font-mono text-[10px] text-gray-400">#{{ order.order_id|default:order.id }}</td>
+                        <td class="p-4 font-medium text-white text-xs">{{ order.full_name }}</td>
                         <td class="p-4">
-                            <span class="px-2 py-1 {% if order.status == 'PAID' %}bg-green-900/30 text-green-400{% else %}bg-yellow-900/30 text-yellow-400{% endif %} text-[9px] rounded uppercase font-bold border border-white/5">
+                            <span class="px-2 py-1 {% if order.status == 'PAID' %}bg-green-900/20 text-green-400 border-green-900/50{% else %}bg-yellow-900/20 text-yellow-400 border-yellow-900/50{% endif %} text-[8px] rounded-none uppercase font-bold border">
                                 {{ order.get_status_display }}
                             </span>
                         </td>
-                        <td class="p-4 text-gray-400 text-xs">{{ order.get_payment_method_display }}</td>
-                        <td class="p-4 font-bold text-white">${{ order.total_amount }}</td>
-                        <td class="p-4">
-                            <a href="#" class="text-gold text-[10px] font-bold uppercase hover:tracking-widest transition-all">Details →</a>
+                        <td class="p-4 font-bold text-white text-right text-xs">₹{{ order.total_amount }}</td>
+                        <td class="p-4 text-center">
+                            <a href="#" class="text-gold text-[9px] font-bold uppercase tracking-widest hover:text-white transition-all">Details</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="p-20 text-center text-gray-600 uppercase text-[10px] tracking-[0.3em]">
-                            <div class="mb-2 text-2xl">📁</div>
+                        <td colspan="5" class="p-20 text-center text-gray-600 uppercase text-[10px] tracking-[0.3em]">
+                            <div class="mb-4 text-3xl opacity-20">📁</div>
                             No recent transactions found
                         </td>
                     </tr>
@@ -92,4 +93,14 @@
         </div>
     </section>
 </main>
+
+<style>
+    /* Custom Scrollbar Handling */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .gold-bg { background-color: #D4AF37; }
+    .gold-text { color: #D4AF37; }
+    .card { background-color: #0A0A0A; }
+</style>
 {% endblock %}

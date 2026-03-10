@@ -3,109 +3,100 @@
 {% block title %}Inventory Warehouse | KAVRA Admin{% endblock %}
 
 {% block content %}
-<main class="p-8">
+<main class="p-4 md:p-8 w-full max-w-[100vw] overflow-x-hidden">
     <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
         <div>
-            <h1 class="text-2xl font-semibold uppercase tracking-tight">Inventory Warehouse</h1>
-            <p class="text-sm text-gray-500 uppercase tracking-widest text-[10px] mt-1">Manage products, stock levels, and variants.</p>
+            <h1 class="text-xl md:text-2xl font-semibold uppercase tracking-tight text-white">Inventory Warehouse</h1>
+            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest mt-1">Manage products, stock levels, and variants.</p>
         </div>
         
-        <div class="flex flex-wrap gap-4 w-full lg:w-auto">
-            <form method="GET" action="{% url 'inventory' %}" class="relative flex-1 lg:flex-none">
+        <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+            <form method="GET" action="{% url 'inventory' %}" class="relative w-full sm:w-64">
                 {% if request.GET.filter %}
                     <input type="hidden" name="filter" value="{{ request.GET.filter }}">
                 {% endif %}
                 <input type="text" name="search" value="{{ query|default:'' }}" placeholder="Search SKU or Name..." 
-                       class="bg-neutral-900 border border-white/10 text-xs py-2.5 px-10 rounded-sm focus:border-gold outline-none w-full lg:w-64 transition text-white">
-                <button type="submit" class="absolute left-3 top-3 opacity-30 text-xs hover:opacity-100 transition">🔍</button>
+                       class="bg-neutral-900 border border-white/10 text-xs py-3 px-10 rounded-none focus:border-gold outline-none w-full transition text-white appearance-none">
+                <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 opacity-30 text-xs hover:opacity-100 transition">🔍</button>
             </form>
             
-            <a href="{% url 'add_product' %}" class="px-6 py-2.5 gold-bg text-black font-bold text-xs uppercase tracking-widest hover:brightness-110 transition text-center shadow-lg shadow-gold/10">
+            <a href="{% url 'add_product' %}" class="px-6 py-3 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 transition text-center shadow-lg shadow-gold/10 active:scale-[0.98]">
                 + Add Product
             </a>
         </div>
     </header>
 
-    <div class="flex gap-4 mb-8 overflow-x-auto pb-2 no-scrollbar">
-        <a href="{% url 'inventory' %}" class="px-5 py-2 rounded-full text-[10px] uppercase font-bold {% if not request.GET.filter %}gold-bg text-black{% else %}bg-white/5 text-gray-400{% endif %} whitespace-nowrap transition">
+    <div class="flex gap-3 mb-8 overflow-x-auto pb-4 no-scrollbar snap-x">
+        <a href="{% url 'inventory' %}" class="px-5 py-2 rounded-none text-[9px] uppercase font-bold snap-start {% if not request.GET.filter %}gold-bg text-black{% else %}bg-white/5 text-gray-400{% endif %} whitespace-nowrap transition border border-white/5">
             All Items
         </a>
-        <a href="?filter=low_stock" class="px-5 py-2 rounded-full text-[10px] uppercase font-bold {% if request.GET.filter == 'low_stock' %}gold-bg text-black{% else %}bg-white/5 text-gray-400{% endif %} border border-white/5 whitespace-nowrap transition">
+        <a href="?filter=low_stock" class="px-5 py-2 rounded-none text-[9px] uppercase font-bold snap-start {% if request.GET.filter == 'low_stock' %}gold-bg text-black{% else %}bg-white/5 text-gray-400{% endif %} border border-white/5 whitespace-nowrap transition">
             Low Stock Alerts
         </a>
     </div>
 
-    <div class="card overflow-hidden bg-neutral-900/50 border border-white/5">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[1000px]">
-                <thead class="bg-white/5 text-[10px] uppercase tracking-[0.2em] text-gray-500">
+    <div class="card overflow-hidden bg-neutral-900/30 border border-white/5 rounded-sm">
+        <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-sm min-w-[900px]">
+                <thead class="bg-black/40 text-[9px] uppercase tracking-[0.2em] text-gray-500">
                     <tr>
-                        <th class="p-6">Product Detail</th>
-                        <th class="p-6">Base SKU</th>
-                        <th class="p-6">Collection</th>
-                        <th class="p-6 text-center">Size Breakdown (S/M/L/XL)</th>
-                        <th class="p-6">Price</th>
-                        <th class="p-6">Status</th>
-                        <th class="p-6 text-right">Actions</th>
+                        <th class="p-5">Product Detail</th>
+                        <th class="p-5">Base SKU</th>
+                        <th class="p-5 text-center">S/M/L/XL Stock</th>
+                        <th class="p-5">Price</th>
+                        <th class="p-5">Status</th>
+                        <th class="p-5 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
-                    
                     {% for product in products %}
-                    <tr class="hover:bg-white/[0.02] transition group">
-                        <td class="p-6 flex items-center gap-4">
-                            <div class="w-12 h-16 bg-neutral-800 rounded-sm overflow-hidden border border-white/5 group-hover:border-gold/50 transition shrink-0">
+                    <tr class="hover:bg-white/[0.02] transition group border-b border-white/[0.02]">
+                        <td class="p-5 flex items-center gap-4">
+                            <div class="w-10 h-14 bg-neutral-800 rounded-none overflow-hidden border border-white/5 group-hover:border-gold/50 transition shrink-0">
                                 {% if product.image %}
                                     <img src="{{ product.image.url }}" class="w-full h-full object-cover">
                                 {% else %}
-                                    <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-600 italic">No Img</div>
+                                    <div class="w-full h-full flex items-center justify-center text-[8px] text-gray-600 italic">No Img</div>
                                 {% endif %}
                             </div>
-                            <div>
-                                <p class="font-semibold text-white tracking-wide">{{ product.name }}</p>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5">{{ product.collection.name|default:"General" }}</p>
+                            <div class="min-w-0">
+                                <p class="font-semibold text-white tracking-wide text-xs truncate">{{ product.name }}</p>
+                                <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-0.5">{{ product.collection.name|default:"General" }}</p>
                             </div>
                         </td>
 
-                        <td class="p-6 font-mono text-xs text-gray-400 italic">{{ product.sku_base }}</td>
+                        <td class="p-5 font-mono text-[10px] text-gray-400 italic">{{ product.sku_base }}</td>
 
-                        <td class="p-6 text-xs text-gray-500 uppercase tracking-tighter">{{ product.collection.name|default:"—" }}</td>
-
-                        <td class="p-6">
-                            <div class="flex justify-center gap-1.5">
-                                <span class="w-9 py-1 text-center rounded {% if product.stock_s < 5 %}bg-yellow-900/20 text-gold border border-gold/20 font-bold{% else %}bg-white/5 text-gray-400 border border-white/5{% endif %} text-[10px]">
-                                    {{ product.stock_s }}
-                                </span>
-                                <span class="w-9 py-1 text-center rounded {% if product.stock_m < 5 %}bg-yellow-900/20 text-gold border border-gold/20 font-bold{% else %}bg-white/5 text-gray-400 border border-white/5{% endif %} text-[10px]">
-                                    {{ product.stock_m }}
-                                </span>
-                                <span class="w-9 py-1 text-center rounded {% if product.stock_l < 5 %}bg-yellow-900/20 text-gold border border-gold/20 font-bold{% else %}bg-white/5 text-gray-400 border border-white/5{% endif %} text-[10px]">
-                                    {{ product.stock_l }}
-                                </span>
-                                <span class="w-9 py-1 text-center rounded {% if product.stock_xl < 5 %}bg-yellow-900/20 text-gold border border-gold/20 font-bold{% else %}bg-white/5 text-gray-400 border border-white/5{% endif %} text-[10px]">
-                                    {{ product.stock_xl }}
-                                </span>
+                        <td class="p-5">
+                            <div class="flex justify-center gap-1">
+                                {% for stock in "s,m,l,xl"|split:"," %}
+                                    {% with current_stock=product|get_stock:stock %}
+                                    <span class="w-8 py-1.5 text-center {% if current_stock < 5 %}bg-yellow-900/20 text-gold border-gold/30{% else %}bg-white/5 text-gray-400 border-white/5{% endif %} border text-[9px] font-bold">
+                                        {{ current_stock }}
+                                    </span>
+                                    {% endwith %}
+                                {% endfor %}
                             </div>
                         </td>
 
-                        <td class="p-6 font-bold text-white text-sm tracking-tighter">${{ product.price }}</td>
+                        <td class="p-5 font-bold text-white text-xs tracking-tighter">₹{{ product.price }}</td>
 
-                        <td class="p-6">
+                        <td class="p-5">
                             {% if product.total_stock <= 0 %}
-                                <span class="px-3 py-1 text-[8px] uppercase font-bold rounded-full bg-red-900/30 text-red-500 border border-red-500/20 italic tracking-widest">Out of Stock</span>
+                                <span class="px-2 py-1 text-[8px] uppercase font-bold bg-red-900/20 text-red-500 border border-red-500/20 tracking-tighter">Out of Stock</span>
                             {% elif product.total_stock < 15 %}
-                                <span class="px-3 py-1 text-[8px] uppercase font-bold rounded-full bg-yellow-900/30 text-gold border border-gold/20 italic tracking-widest">Low Stock</span>
+                                <span class="px-2 py-1 text-[8px] uppercase font-bold bg-yellow-900/20 text-gold border border-gold/20 tracking-tighter">Low Stock</span>
                             {% else %}
-                                <span class="px-3 py-1 text-[8px] uppercase font-bold rounded-full bg-green-900/30 text-green-500 border border-green-500/20 italic tracking-widest">Healthy</span>
+                                <span class="px-2 py-1 text-[8px] uppercase font-bold bg-green-900/20 text-green-500 border border-green-500/20 tracking-tighter">Healthy</span>
                             {% endif %}
                         </td>
 
-                        <td class="p-6 text-right">
-                            <div class="flex justify-end gap-3 items-center">
-                                <a href="{% url 'edit_product' product.id %}" class="text-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest border border-gold/20 px-3 py-1 hover:bg-gold hover:text-black">
+                        <td class="p-5 text-right">
+                            <div class="flex justify-end gap-4 items-center">
+                                <a href="{% url 'edit_product' product.id %}" class="text-gold hover:text-white transition-all text-[9px] font-bold uppercase tracking-widest border border-gold/20 px-3 py-1.5 hover:bg-gold hover:text-black">
                                     Edit
                                 </a>
-                                <form action="{% url 'delete_product' product.id %}" method="POST" onsubmit="return confirm('Permanently remove this item from the warehouse?')">
+                                <form action="{% url 'delete_product' product.id %}" method="POST" onsubmit="return confirm('Permanently remove this item?')">
                                     {% csrf_token %}
                                     <button type="submit" class="text-gray-600 hover:text-red-500 transition-all hover:scale-110 text-xs">🗑️</button>
                                 </form>
@@ -114,13 +105,12 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="p-24 text-center text-gray-600 uppercase text-[10px] tracking-[0.4em]">
-                            <div class="mb-4 text-3xl opacity-20">🧥</div>
-                            No inventory items match your search.
+                        <td colspan="6" class="p-20 text-center text-gray-600 uppercase text-[9px] tracking-[0.4em]">
+                            <div class="mb-4 text-3xl opacity-10">🧥</div>
+                            No inventory items found.
                         </td>
                     </tr>
                     {% endfor %}
-
                 </tbody>
             </table>
         </div>
@@ -131,7 +121,7 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .gold-bg { background-color: #D4AF37; }
-    .border-gold { border-color: #D4AF37; }
     .text-gold { color: #D4AF37; }
+    .card { background-color: #0A0A0A; }
 </style>
 {% endblock %}
