@@ -34,8 +34,6 @@
 
             <a href="{% url 'inventory' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if 'inventory' in request.path or 'product' in request.path %}active gold-text{% else %}text-gray-400{% endif %}">👕 Inventory</a>
             
-            <a href="{% url 'customers' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'customers' %}active gold-text{% else %}text-gray-400{% endif %}">👥 Customers</a>
-            
             <a href="{% url 'settings' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'site_settings' %}active gold-text{% else %}text-gray-400{% endif %}">⚙️ Site Settings</a>
         </nav>
         <div class="p-6 border-t border-white/10 text-[10px] text-gray-600 uppercase tracking-widest">
