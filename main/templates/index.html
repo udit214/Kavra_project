@@ -144,32 +144,54 @@
         </div>
     </section>
 
-    <footer class="border-t border-white/5 py-16 px-6 text-center">
-        <div class="text-2xl font-luxury gold-text mb-6 tracking-[0.5em]">KAVRA</div>
-        
-        <div class="flex justify-center space-x-6 mb-8 text-[10px] uppercase tracking-widest text-gray-400">
-            <a href="https://instagram.com/{{genral_settings.Instagram}}" class="hover:text-white transition">Instagram</a>
-            <a href="#" class="hover:text-white transition">Privacy</a>
-            <a href="mailto:{{genral_settings.contact}}" class="hover:text-white transition">Contact</a>
+<footer class="border-t border-white/5 py-16 px-6 text-center">
+    <div id="admin-trigger" class="inline-block cursor-default select-none">
+        <div class="text-2xl font-luxury gold-text mb-6 tracking-[0.5em]">
+            KAVRA
         </div>
+    </div>
+    
+    <div class="flex justify-center space-x-6 mb-8 text-[10px] uppercase tracking-widest text-gray-400">
+        <a href="https://instagram.com/{{genral_settings.Instagram}}" class="hover:text-white transition">Instagram</a>
+        <a href="#" class="hover:text-white transition">Privacy</a>
+        <a href="mailto:{{genral_settings.contact}}" class="hover:text-white transition">Contact</a>
+    </div>
 
-        <div class="space-y-2">
-            <p class="text-[9px] text-gray-600 uppercase tracking-widest">
-                &copy; 2026 {{genral_settings.Store_name}} Luxury Apparel. Crafted for the bold.
-            </p>
-            
-            <p class="text-[8px] uppercase tracking-[0.4em] text-gray-700 pt-4">
-                Architecture by 
-                <a href="#" class="text-gray-500 hover:gold-text transition-all duration-500 font-medium">
-                    WebKitchen Group
-                </a>
-            </p>
-        </div>
-    </footer>
+    <div class="space-y-2">
+        <p class="text-[9px] text-gray-600 uppercase tracking-widest">
+            &copy; 2026 {{genral_settings.Store_name}} Luxury Apparel. Crafted for the bold.
+        </p>
+        
+        <p class="text-[8px] uppercase tracking-[0.4em] text-gray-700 pt-4">
+            Architecture by 
+            <a href="#" class="text-gray-500 hover:gold-text transition-all duration-500 font-medium">
+                WebKitchen Group
+            </a>
+        </p>
+    </div>
+</footer>
 
 </body>
 
 <script>
+    let clickCount = 0;
+    let clickTimer;
+    const adminTrigger = document.getElementById('admin-trigger');
+
+    adminTrigger.addEventListener('click', function() {
+        clickCount++;
+        
+        // Reset count if the user stops clicking for 2 seconds
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+            clickCount = 0;
+        }, 2000);
+
+        if (clickCount === 5) {
+            // Redirect to admin login
+            window.location.href = "{% url 'admin_login' %}";
+        }
+    });
     function toggleMenu() {
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('translate-x-full');
