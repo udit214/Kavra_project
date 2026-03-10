@@ -146,12 +146,25 @@
 
     <footer class="border-t border-white/5 py-16 px-6 text-center">
         <div class="text-2xl font-luxury gold-text mb-6 tracking-[0.5em]">KAVRA</div>
+        
         <div class="flex justify-center space-x-6 mb-8 text-[10px] uppercase tracking-widest text-gray-400">
-            <a href="#" class="hover:text-white transition">Instagram</a>
+            <a href="https://instagram.com/{{genral_settings.Instagram}}" class="hover:text-white transition">Instagram</a>
             <a href="#" class="hover:text-white transition">Privacy</a>
-            <a href="#" class="hover:text-white transition">Contact</a>
+            <a href="mailto:{{genral_settings.contact}}" class="hover:text-white transition">Contact</a>
         </div>
-        <p class="text-[9px] text-gray-600 uppercase tracking-widest">&copy; 2026 KAVRA Luxury Apparel. Crafted for the bold.</p>
+
+        <div class="space-y-2">
+            <p class="text-[9px] text-gray-600 uppercase tracking-widest">
+                &copy; 2026 {{genral_settings.Store_name}} Luxury Apparel. Crafted for the bold.
+            </p>
+            
+            <p class="text-[8px] uppercase tracking-[0.4em] text-gray-700 pt-4">
+                Architecture by 
+                <a href="#" class="text-gray-500 hover:gold-text transition-all duration-500 font-medium">
+                    WebKitchen Group
+                </a>
+            </p>
+        </div>
     </footer>
 
 </body>
