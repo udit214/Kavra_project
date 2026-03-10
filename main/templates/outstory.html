@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Heritage | KAVRA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        
+        /* Optimized Parallax for Mobile */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        @media (max-width: 1024px) {
+            .parallax { background-attachment: scroll; } /* Better performance on mobile */
+        }
+
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in.active { opacity: 1; transform: translateY(0); }
+        
+        /* Text selection color */
+        ::selection { background: var(--gold); color: black; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-8 flex justify-between items-center mix-blend-difference">
+        <a href="/" class="text-[10px] uppercase tracking-[0.4em] hover:gold-text transition">← Close</a>
+        <div class="text-xl font-luxury gold-text tracking-[0.3em]">KAVRA</div>
+        <div class="w-10"></div> </nav>
+
+    <section class="relative h-screen flex items-center justify-center parallax" style="background-image: url('https://images.unsplash.com/photo-1441984908746-d441d36bb413?auto=format&fit=crop&q=80&w=2000');">
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative text-center px-6">
+            <h2 class="text-[9px] md:text-[11px] gold-text uppercase tracking-[0.8em] mb-8 fade-in js-reveal">{{content.subheading1}}</h2>
+            <h1 class="text-5xl md:text-9xl font-luxury uppercase tracking-tighter leading-none fade-in js-reveal"><span class="italic text-white">{{content.heading1}}</span></h1>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-pulse text-[8px] tracking-[0.6em] uppercase opacity-40">Scroll to Discover</div>
+    </section>
+
+    <section class="py-32 md:py-48 px-6 max-w-5xl mx-auto text-center">
+        <div class="fade-in js-reveal">
+            <h3 class="text-[10px] gold-text uppercase tracking-[0.5em] mb-12">{{content.subheading2}}</h3>
+            <p class="text-xl md:text-4xl font-light leading-relaxed mb-16 italic font-luxury">
+                {{content.paragraph1}}
+            </p>
+            <div class="w-16 h-px bg-gold/30 mx-auto"></div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-neutral-950">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
+            <div class="fade-in js-reveal lg:order-2">
+                <div class="relative overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1558603668-6570496b66f8?auto=format&fit=crop&q=80&w=1000" 
+                         class="w-full h-[500px] md:h-[700px] object-cover grayscale hover:grayscale-0 transition duration-1000 scale-105 group-hover:scale-100">
+                </div>
+            </div>
+            <div class="fade-in js-reveal space-y-10 lg:order-1">
+                <h4 class="text-3xl md:text-5xl font-luxury uppercase tracking-widest leading-tight">{{content.heading2_word1}}<br><span class="gold-text">{{content.heading2_word2}}</span></h4>
+                <div class="space-y-6 text-gray-400 font-light leading-loose text-sm md:text-base">
+                    <p>
+                        {{content.paragraph2}}
+                    </p>
+                    <p>
+                       {{content.paragraph3}}
+                    </p>
+                </div>
+                <div class="pt-6">
+                    <span class="text-[10px] gold-text uppercase tracking-[0.4em] border-b border-gold/30 pb-2">Uncompromising Quality</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-[70vh] parallax flex items-center justify-end" style="background-image: url('https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=2000');">
+        <div class="bg-black/90 p-10 md:p-24 max-w-2xl border-l border-gold/20 backdrop-blur-md">
+            <h2 class="text-3xl md:text-5xl font-luxury gold-text uppercase mb-8 italic">{{content.heading3}}</h2>
+            <p class="text-[10px] md:text-xs tracking-[0.4em] uppercase leading-loose text-gray-300 mb-8">
+                {{contnet.subheading3}}
+            </p>
+            <p class="text-gray-500 text-[9px] uppercase tracking-widest leading-relaxed font-light">
+                {{content.subheading4}}
+            </p>
+        </div>
+    </section>
+
+    <section class="py-40 text-center px-6 bg-black">
+        <div class="fade-in js-reveal">
+            <p class="text-[10px] text-gray-600 uppercase tracking-[1em] mb-12">The House of Kavra</p>
+            <h2 class="text-2xl md:text-4xl font-luxury uppercase tracking-widest mb-16">{{content.heading4}}</h2>
+            <a href="/all_products-all_products" class="inline-block px-14 py-6 border border-white/10 hover:border-gold hover:gold-text transition-all duration-700 text-[10px] uppercase tracking-[0.5em] group">
+                Shop the Collection
+                <span class="block max-w-0 group-hover:max-w-full transition-all duration-500 h-px bg-gold mt-2"></span>
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center border-t border-white/5">
+        <p class="text-gray-700 text-[8px] uppercase tracking-[1em]">KAVRA MMXXVI</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        document.querySelectorAll('.js-reveal').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

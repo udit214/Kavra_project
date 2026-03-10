@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shop All | KAVRA Luxury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        
+        /* Smooth product hover */
+        .product-card img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .product-card:hover img { transform: scale(1.08); }
+
+        /* Amazon-style Image Aspect Ratio */
+        .aspect-luxury { aspect-ratio: 3/4; }
+    </style>
+</head>
+<body>
+
+    <nav class="flex justify-between items-center px-6 md:px-12 py-5 sticky top-0 bg-black/95 backdrop-blur-xl z-50 border-b border-white/5">
+        <button onclick="toggleNav()" class="md:hidden text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8h16M4 16h16" />
+            </svg>
+        </button>
+
+        <div class="text-xl font-luxury font-bold tracking-[0.3em] gold-text absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+            <a href="/">KAVRA</a>
+        </div>
+        
+        <div class="hidden md:flex space-x-10 text-[11px] uppercase tracking-[0.3em] font-medium">
+            <a href="/" class="hover:gold-text transition">The House</a>
+            <a href="all_products-all_products" class="gold-text transition">Archive</a>
+        </div>
+
+        <div class="flex items-center">
+            <a href="{% url 'cart_page' %}" class="relative">
+                <span class="text-xl">🛒</span>
+            </a>
+        </div>
+    </nav>
+
+    <div id="mobile-nav" class="fixed inset-0 bg-black z-[100] -translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+        <div class="p-8 flex flex-col h-full">
+            <button onclick="toggleNav()" class="self-end text-3xl font-light">&times;</button>
+            <div class="flex flex-col space-y-8 mt-20 text-center">
+                <a href="/" class="text-2xl font-luxury tracking-widest uppercase">The House</a>
+                <a href="all_products-all_products" class="text-2xl font-luxury tracking-widest uppercase gold-text">Archive</a>
+                <hr class="border-white/10 w-20 mx-auto">
+                <a href="{% url 'cart_page' %}" class="text-sm tracking-widest uppercase text-gray-500">Your Bag</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-[1800px] mx-auto flex flex-col md:flex-row gap-8 px-4 md:px-12 py-8">
+        
+        <aside class="w-64 space-y-10 hidden md:block sticky top-32 h-fit">
+            {% if current_size or current_sort != 'newest' %}
+            <div class="pb-4 border-b border-white/10">
+                <a href="/all_products-{{ current_slug }}" class="text-[9px] gold-text uppercase tracking-widest hover:underline">✕ Clear Selection</a>
+            </div>
+            {% endif %}
+
+            <div>
+                <h3 class="font-luxury text-sm gold-text mb-6 uppercase tracking-widest">Collections</h3>
+                <ul class="space-y-4 text-[10px] uppercase tracking-[0.2em]">
+                    <li><a href="/all_products-all_products" class="{% if current_slug == 'all_products' %}gold-text font-bold{% else %}text-gray-500 hover:text-white{% endif %}">All Archive</a></li>
+                    {% for col in all_collections %}
+                    <li><a href="/all_products-{{ col.slug }}" class="{% if current_slug == col.slug %}gold-text font-bold{% else %}text-gray-500 hover:text-white{% endif %}">{{ col.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-luxury text-sm gold-text mb-6 uppercase tracking-widest">Sizing</h3>
+                <div class="grid grid-cols-4 gap-2">
+                    <a href="?size=S" class="border {% if current_size == 'S' %}border-gold gold-text{% else %}border-white/10 text-gray-500{% endif %} py-2 text-[9px] text-center hover:border-gold">S</a>
+                    <a href="?size=M" class="border {% if current_size == 'M' %}border-gold gold-text{% else %}border-white/10 text-gray-500{% endif %} py-2 text-[9px] text-center hover:border-gold">M</a>
+                    <a href="?size=L" class="border {% if current_size == 'L' %}border-gold gold-text{% else %}border-white/10 text-gray-500{% endif %} py-2 text-[9px] text-center hover:border-gold">L</a>
+                    <a href="?size=XL" class="border {% if current_size == 'XL' %}border-gold gold-text{% else %}border-white/10 text-gray-500{% endif %} py-2 text-[9px] text-center hover:border-gold">XL</a>
+                </div>
+            </div>
+        </aside>
+
+        <section class="flex-1">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-white/5 pb-6">
+                <div>
+                    <h1 class="text-xl font-luxury uppercase tracking-widest">The Archive</h1>
+                    <span class="text-[9px] text-gray-600 uppercase tracking-[0.3em] mt-1 block">{{ products.count }} Pieces Available</span>
+                </div>
+                
+                <select onchange="location = this.value;" class="bg-transparent text-[10px] border-none focus:ring-0 gold-text uppercase tracking-widest p-0 cursor-pointer">
+                    <option value="?sort=newest" {% if current_sort == 'newest' %}selected{% endif %}>Sort: Newest First</option>
+                    <option value="?sort=price-low" {% if current_sort == 'price-low' %}selected{% endif %}>Price: Ascending</option>
+                    <option value="?sort=price-high" {% if current_sort == 'price-high' %}selected{% endif %}>Price: Descending</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-10 md:gap-y-16">
+                {% for i in products %}
+                    <div class="product-card group">
+                        <a href="productDetail-{{i.sku_base}}">
+                            <div class="relative overflow-hidden bg-neutral-900 aspect-luxury mb-4 rounded-sm">
+                                <img src="{{ i.image.url }}" class="w-full h-full object-cover">
+                                <div class="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 hidden md:block">
+                                    <button class="w-full py-4 gold-bg text-black font-bold text-[10px] uppercase tracking-widest">View Piece</button>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="space-y-1 px-1">
+                            <h4 class="text-[10px] md:text-[11px] font-medium tracking-[0.1em] uppercase text-gray-200 truncate">{{ i.name }}</h4>
+                            <p class="gold-text text-[11px] md:text-xs font-semibold tracking-widest">${{ i.price }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-span-full py-32 text-center border border-dashed border-white/5">
+                        <p class="text-gray-600 uppercase tracking-[0.4em] text-[10px]">Archive is currently empty</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <div class="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
+        <button onclick="toggleFilters()" class="bg-white text-black px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] shadow-2xl active:scale-95 transition-transform">
+            Refine Selection
+        </button>
+    </div>
+
+    <div id="filter-drawer" class="fixed inset-0 bg-black z-[100] translate-y-full transition-transform duration-500 md:hidden">
+        <div class="p-8 h-full flex flex-col">
+            <button onclick="toggleFilters()" class="self-end text-3xl font-light mb-10">&times;</button>
+            <h2 class="font-luxury gold-text tracking-widest text-lg mb-12">FILTERS</h2>
+            
+            <div class="space-y-12 overflow-y-auto no-scrollbar">
+                <div>
+                    <h3 class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mb-6">Collections</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="/all_products-all_products" class="px-5 py-3 border border-white/10 text-[9px] uppercase">All Archive</a>
+                        {% for col in all_collections %}
+                        <a href="/all_products-{{ col.slug }}" class="px-5 py-3 border border-white/10 text-[9px] uppercase">{{ col.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mb-6">Sizing</h3>
+                    <div class="grid grid-cols-4 gap-3">
+                        <a href="?size=S" class="py-4 border border-white/10 text-[9px] text-center uppercase">S</a>
+                        <a href="?size=M" class="py-4 border border-white/10 text-[9px] text-center uppercase">M</a>
+                        <a href="?size=L" class="py-4 border border-white/10 text-[9px] text-center uppercase">L</a>
+                        <a href="?size=XL" class="py-4 border border-white/10 text-[9px] text-center uppercase">XL</a>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="toggleFilters()" class="mt-auto w-full py-5 gold-bg text-black text-[10px] font-bold uppercase tracking-widest">Apply Selection</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleNav() { document.getElementById('mobile-nav').classList.toggle('-translate-x-full'); }
+        function toggleFilters() { document.getElementById('filter-drawer').classList.toggle('translate-y-full'); }
+    </script>
+
+</body>
+</html>

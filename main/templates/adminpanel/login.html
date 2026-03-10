@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&display=swap');
+        .font-luxury { font-family: 'Playfair+Display', serif; }
+        .gold-glow:focus { box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); border-color: #d4af37; }
+    </style>
+</head>
+<body class="bg-[#050505] min-h-screen flex items-center justify-center font-sans text-gray-200">
+
+    <div class="w-full max-w-sm p-8 border border-gray-900 bg-[#0a0a0a] rounded-2xl shadow-2xl">
+        <div class="text-center mb-10">
+            <h1 class="font-luxury text-4xl tracking-tighter text-[#d4af37]">KAVRA</h1>
+            <div class="h-[1px] w-12 bg-[#d4af37] mx-auto mt-2"></div>
+            <p class="text-[10px] uppercase tracking-[0.4em] mt-4 text-gray-500">Security Portal</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-red-500 text-xs text-center italic">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <div>
+                <input type="text" name="username" placeholder="IDENTIFIER" required
+                    class="w-full bg-black border border-gray-800 py-3 px-4 text-xs tracking-widest uppercase text-white focus:outline-none gold-glow transition-all">
+            </div>
+
+            <div>
+                <input type="password" name="password" placeholder="PASSPHRASE" required
+                    class="w-full bg-black border border-gray-800 py-3 px-4 text-xs tracking-widest uppercase text-white focus:outline-none gold-glow transition-all">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-[#d4af37] text-black py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-[#b8860b] transition-colors">
+                Authorize Access
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

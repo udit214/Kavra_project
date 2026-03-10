@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shopping Bag | KAVRA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        .border-subtle { border-color: rgba(255,255,255,0.08); }
+        /* Sticky Mobile Footer Shadow */
+        .mobile-shadow { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.9); }
+    </style>
+</head>
+<body class="pt-10 md:pt-24 pb-32 md:pb-20">
+
+    <main class="max-w-7xl mx-auto px-4 md:px-6">
+        <header class="mb-8 md:mb-16">
+            <div class="flex items-center gap-4 mb-2">
+                <a href="/all_products-all_products" class="text-gray-500 text-xs md:hidden">← Back</a>
+                <h1 class="text-3xl md:text-4xl font-luxury uppercase tracking-widest leading-none">Your <span class="italic text-white">Bag</span></h1>
+            </div>
+            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-[0.5em]">Secure Checkout & Review</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
+            
+            <div class="flex-1 space-y-6 md:space-y-10">
+                {% if bag_items %}
+                    {% for item in bag_items %}
+                        <div class="flex flex-row gap-4 md:gap-8 pb-6 md:pb-10 border-b border-subtle group">
+                            
+                            <div class="w-24 h-32 md:w-40 md:h-52 bg-neutral-900 overflow-hidden shrink-0 rounded-sm">
+                                <img src="{{ item.product.image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            </div>
+
+                            <div class="flex-1 flex flex-col justify-between py-1">
+                                <div class="flex justify-between items-start gap-2">
+                                    <div>
+                                        <h2 class="text-xs md:text-xl font-luxury uppercase tracking-widest leading-tight">{{ item.product.name }}</h2>
+                                        <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest mt-1">Size: {{ item.variant.size }}</p>
+                                    </div>
+                                    <p class="text-xs md:text-lg font-light">${{ item.product.price }}</p>
+                                </div>
+
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div class="flex items-center border border-white/10 w-fit bg-white/5">
+                                        <a href="{% url 'decrease_qty' item.variant.id %}" class="px-3 py-1 md:px-4 md:py-2 hover:bg-white/10 transition">-</a>
+                                        <span class="px-4 py-1 md:px-6 md:py-2 text-[11px] md:text-sm">{{ item.quantity }}</span>
+                                        <a href="{% url 'increase_qty' item.variant.id %}" class="px-3 py-1 md:px-4 md:py-2 hover:bg-white/10 transition">+</a>
+                                    </div>
+
+                                    <div class="flex items-center justify-between md:justify-end gap-6">
+                                        <span class="text-[10px] gold-text uppercase tracking-widest hidden md:block">Subtotal: ${{ item.line_total }}</span>
+                                        <a href="{% url 'remove_from_cart' item.variant.id %}" class="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-gray-500 hover:text-white transition underline underline-offset-4">
+                                            Remove
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="py-20 text-center border border-dashed border-white/10">
+                        <p class="text-gray-500 uppercase tracking-[0.5em] text-xs">Your bag is empty</p>
+                        <a href="/all_products-all_products" class="inline-block mt-8 gold-text text-[10px] uppercase tracking-widest border-b border-gold pb-1">Return to Archive</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="w-full lg:w-[400px]">
+                <div class="bg-neutral-900/40 p-6 md:p-10 lg:sticky lg:top-32 border border-white/5 backdrop-blur-md rounded-sm">
+                    <h3 class="hidden md:block text-xs font-bold uppercase tracking-[0.3em] mb-8 border-b border-white/5 pb-4">Summary</h3>
+                    
+                    <div class="space-y-4 mb-8 md:mb-10">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 uppercase tracking-widest text-[10px]">Subtotal</span>
+                            <span class="text-xs md:text-sm">${{ total_price }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 uppercase tracking-widest text-[10px]">Shipping</span>
+                            <span class="gold-text italic tracking-widest uppercase text-[9px] md:text-[10px]">Complimentary</span>
+                        </div>
+                        <div class="pt-6 border-t border-white/5 flex justify-between items-baseline">
+                            <span class="text-xs uppercase tracking-widest">Grand Total</span>
+                            <span class="text-2xl font-semibold gold-text font-luxury">${{ total_price }}</span>
+                        </div>
+                    </div>
+
+                    {% if bag_items %}
+                        <a href="{% url 'checkout' %}" class="hidden md:block w-full py-5 gold-bg text-black text-center text-[10px] font-bold uppercase tracking-[0.4em] hover:brightness-110 transition shadow-2xl">
+                            Proceed to Checkout
+                        </a>
+                    {% endif %}
+
+                    <div class="mt-8 space-y-4">
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest leading-loose">
+                            <span class="gold-text">●</span> Secure encrypted checkout<br>
+                            <span class="gold-text">●</span> 14-day luxury boutique returns<br>
+                            <span class="gold-text">●</span> Authenticity & quality guaranteed
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% if bag_items %}
+    <div class="fixed bottom-0 left-0 w-full md:hidden bg-black/95 border-t border-white/10 backdrop-blur-xl p-5 z-50 mobile-shadow">
+        <div class="flex items-center justify-between gap-6">
+            <div class="flex flex-col">
+                <span class="text-[9px] text-gray-500 uppercase tracking-widest">Total Selection</span>
+                <span class="text-xl font-bold gold-text font-luxury">${{ total_price }}</span>
+            </div>
+            <a href="{% url 'checkout' %}" class="flex-1 py-4 gold-bg text-black text-center text-[11px] font-bold uppercase tracking-[0.2em] rounded-sm active:scale-95 transition-transform">
+                Checkout Now
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</body>
+</html>

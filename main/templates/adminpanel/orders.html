@@ -1,0 +1,101 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Order Fulfillment | KAVRA Admin{% endblock %}
+
+{% block content %}
+<main class="p-4 md:p-8">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+        <div>
+            <h1 class="text-2xl font-semibold uppercase tracking-tight">Order Fulfillment</h1>
+            <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-[0.2em]">Process shipments and verify luxury acquisitions.</p>
+        </div>
+        <div class="flex w-full sm:w-auto gap-2">
+            <button class="flex-1 sm:flex-none px-6 py-2 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition flex items-center justify-center gap-2">
+                📥 Download Manifest
+            </button>
+        </div>
+    </header>
+
+    <div class="flex gap-8 mb-8 border-b border-white/5 overflow-x-auto no-scrollbar">
+        <a href="?status=all" class="pb-4 text-[10px] font-bold uppercase tracking-widest transition whitespace-nowrap {% if current_status == 'all' %}border-b-2 border-gold gold-text{% else %}text-gray-500 hover:text-white{% endif %}">
+            All Orders
+        </a>
+        <a href="?status=pending" class="pb-4 text-[10px] font-bold uppercase tracking-widest transition whitespace-nowrap {% if current_status == 'pending' %}border-b-2 border-gold gold-text{% else %}text-gray-500 hover:text-white{% endif %}">
+            Pending COD
+        </a>
+        <a href="?status=toship" class="pb-4 text-[10px] font-bold uppercase tracking-widest transition whitespace-nowrap {% if current_status == 'toship' %}border-b-2 border-gold gold-text{% else %}text-gray-500 hover:text-white{% endif %}">
+            To Ship
+        </a>
+        <a href="?status=completed" class="pb-4 text-[10px] font-bold uppercase tracking-widest transition whitespace-nowrap {% if current_status == 'completed' %}border-b-2 border-gold gold-text{% else %}text-gray-500 hover:text-white{% endif %}">
+            Completed
+        </a>
+    </div>
+
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm min-w-[1000px]">
+                <thead class="bg-white/5 text-[10px] uppercase tracking-[0.2em] text-gray-500">
+                    <tr>
+                        <th class="p-6">Order ID</th>
+                        <th class="p-6">Date</th>
+                        <th class="p-6">Customer</th>
+                        <th class="p-6">Payment</th>
+                        <th class="p-6 text-center">Items</th>
+                        <th class="p-6">Total</th>
+                        <th class="p-6">Status</th>
+                        <th class="p-6 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for order in orders %}
+                    <tr class="hover:bg-white/[0.02] transition group">
+                        <td class="p-6 font-mono text-xs text-gray-400">#{{ order.order_id }}</td>
+                        <td class="p-6 text-xs text-gray-500">{{ order.created_at|date:"M d, Y" }}</td>
+                        <td class="p-6">
+                            <p class="font-medium text-white">{{ order.full_name }}</p>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-tighter">{{ order.city }}, {{ order.country }}</p>
+                        </td>
+                        <td class="p-6">
+                            <span class="px-2 py-0.5 text-[8px] font-bold uppercase rounded-sm {% if order.payment_method == 'COD' %}bg-yellow-900/20 text-gold border border-gold/20{% else %}bg-blue-900/20 text-blue-400 border border-blue-500/20{% endif %} italic">
+                                {{ order.payment_method }}
+                            </span>
+                        </td>
+                        <td class="p-6 text-center text-xs text-gray-400">{{ order.items.count }}</td>
+                        <td class="p-6 font-bold text-white tracking-tight">${{ order.total_amount }}</td>
+                        <td class="p-6">
+                            <span class="px-3 py-1 text-[8px] uppercase font-bold rounded-full italic tracking-widest
+                                {% if order.status == 'PENDING' %}bg-orange-900/20 text-orange-400 border border-orange-500/20
+                                {% elif order.status == 'TOSHIP' %}bg-blue-900/20 text-blue-400 border border-blue-500/20
+                                {% elif order.status == 'DELIVERED' %}bg-green-900/20 text-green-400 border border-green-500/20
+                                {% else %}bg-white/5 text-gray-400 border border-white/10{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="p-6 text-right">
+                            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <a href="{% url 'generate_invoice' order.id %}" target="_blank" 
+                                   class="px-4 py-1.5 border border-gold/40 text-gold text-[9px] uppercase font-bold tracking-widest rounded hover:bg-gold hover:text-black transition">
+                                    Print Bill
+                                </a>
+
+                                {% if order.status == 'PENDING' %}
+                                <a href="{% url 'verify_order' order.id %}" class="px-4 py-1.5 bg-gold text-black text-[9px] font-bold uppercase rounded hover:brightness-110 shadow-lg shadow-gold/10">Verify</a>
+                                {% endif %}
+                                
+                                <a href="#" class="px-4 py-1.5 border border-white/10 text-[9px] uppercase font-bold tracking-widest rounded hover:bg-white/5 transition">Details</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="p-20 text-center text-gray-600 uppercase text-[10px] tracking-[0.3em]">
+                            No orders found in this category.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

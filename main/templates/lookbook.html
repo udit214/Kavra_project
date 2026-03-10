@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lookbook | KAVRA Luxury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        
+        /* Smooth fade-in animation for images */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full z-50 mix-blend-difference px-8 py-6 flex justify-between items-center">
+        <div class="text-2xl font-luxury font-bold tracking-[0.4em] gold-text">KAVRA</div>
+        <a href="landing.html" class="text-[10px] uppercase tracking-widest border-b border-gold pb-1">Exit Lookbook</a>
+    </nav>
+
+    <section class="h-screen flex flex-col justify-center items-center text-center px-4">
+        <h1 class="text-[10px] gold-text uppercase tracking-[0.8em] mb-4 reveal">Spring / Summer 2026</h1>
+        <h2 class="text-6xl md:text-9xl font-luxury tracking-tighter reveal">THE <span class="gold-text">GOLDEN</span> ERA</h2>
+        <p class="mt-8 text-gray-500 font-light max-w-md reveal">A study in light, shadow, and the timeless allure of silk. Shot on location in Florence.</p>
+        <div class="mt-12 animate-bounce text-gray-600">↓</div>
+    </section>
+
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div class="md:col-span-7 reveal">
+                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&q=80&w=800" 
+                     class="w-full grayscale hover:grayscale-0 transition duration-1000 object-cover aspect-[4/5]" alt="Look 1">
+            </div>
+            <div class="md:col-span-5 space-y-6 reveal">
+                <span class="text-xs gold-text font-luxury tracking-widest">LOOK 01</span>
+                <h3 class="text-4xl font-luxury italic">"The Shadow Blazer"</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Designed to catch the light at every angle. Hand-stitched lapels meeting the finest Italian silk.
+                </p>
+                <button class="text-[10px] uppercase tracking-[0.3em] border border-white/20 px-6 py-3 hover:gold-bg hover:text-black transition">Explore Piece</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-[#0F0F0F]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
+            <div class="reveal">
+                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&q=80&w=800" 
+                     class="w-full aspect-square object-cover mb-6">
+                <p class="text-[10px] uppercase tracking-widest text-center">Gilded Cargo / Midnight Mesh</p>
+            </div>
+            <div class="reveal mt-0 md:mt-32">
+                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&q=80&w=800" 
+                     class="w-full aspect-[3/4] object-cover mb-6">
+                <p class="text-[10px] uppercase tracking-widest text-center">The Monarch Bomber</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-[60vh] flex items-center justify-center text-center bg-black">
+        <div class="reveal">
+            <p class="font-luxury text-3xl md:text-5xl italic leading-tight text-gray-300">
+                "Fashion is a language. <br> <span class="gold-text">Kavra</span> is the statement."
+            </p>
+        </div>
+    </section>
+
+    <section class="py-20 px-4 max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=400" class="reveal w-full aspect-square object-cover">
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=400" class="reveal w-full aspect-square object-cover">
+        <img src="https://images.unsplash.com/photo-1550614000-4895a10e1bfd?auto=format&fit=crop&q=80&w=400" class="reveal w-full aspect-square object-cover">
+        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=400" class="reveal w-full aspect-square object-cover">
+    </section>
+
+    <footer class="py-20 border-t border-white/10 text-center">
+        <button class="gold-bg text-black px-12 py-4 font-bold uppercase tracking-widest text-xs">Shop the Collection</button>
+    </footer>
+
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Initial check
+        reveal();
+    </script>
+
+</body>
+</html>

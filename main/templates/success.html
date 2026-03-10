@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Collections | KAVRA Luxury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        
+        /* Smooth Entrance */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Card Mechanics */
+        .luxury-card .card-inner { position: relative; overflow: hidden; border-radius: 2px; transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .luxury-card:hover .card-inner { transform: translateY(-8px); }
+        .card-image { transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1), filter 1s ease; filter: grayscale(0.2) brightness(0.9); }
+        .luxury-card:hover .card-image { transform: scale(1.05); filter: grayscale(0) brightness(1.05); }
+
+        /* Floating Button Effect */
+        .explore-btn {
+            background: white;
+            color: black;
+            opacity: 0;
+            transform: translate(-50%, 20px);
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .luxury-card:hover .explore-btn { opacity: 1; transform: translate(-50%, 0); }
+
+        /* Custom underline for titles */
+        .title-underline { width: 0%; height: 1px; background: var(--gold); transition: width 0.6s ease; }
+        .luxury-card:hover .title-underline { width: 100%; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+    </style>
+</head>
+<body class="bg-[#0A0A0A]">
+
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 md:px-12 py-5 flex justify-between items-center">
+        <a href="/" class="text-[10px] uppercase tracking-[0.4em] text-gray-400 hover:text-white transition-all">← Home</a>
+        <div class="text-xl md:text-2xl font-luxury gold-text tracking-[0.4em] pl-6">KAVRA</div>
+        <div class="flex items-center gap-8">
+            <a href="/cart" class="relative group">
+                <span class="text-[10px] uppercase tracking-[0.4em] group-hover:gold-text transition-all">Bag</span>
+                <span class="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all group-hover:w-full"></span>
+            </a>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-6 pt-40 pb-20 md:pt-56 md:pb-32 text-center">
+        <p class="text-[9px] md:text-[11px] gold-text uppercase tracking-[1em] mb-6 reveal js-reveal">The Eternal Archive</p>
+        <h1 class="text-5xl md:text-8xl font-luxury uppercase tracking-tight leading-none reveal js-reveal">
+            Series <span class="italic font-light text-white">Curations</span>
+        </h1>
+        <div class="flex justify-center items-center gap-4 mt-12 reveal js-reveal" style="transition-delay: 0.2s;">
+            <div class="w-12 h-px bg-white/10"></div>
+            <span class="text-[10px] uppercase tracking-[0.5em] text-gray-500">Vol. 2026</span>
+            <div class="w-12 h-px bg-white/10"></div>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-6 mb-40">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20 md:gap-y-32">
+            
+            {% for i in collections %}
+            <article class="reveal js-reveal luxury-card group">
+                <a href="all_products-{{i.slug}}" class="block outline-none">
+                    <div class="card-inner aspect-[3/4] bg-neutral-900 mb-8 shadow-2xl">
+                        <img src="{{ i.image.url }}" alt="{{ i.name }}" class="card-image w-full h-full object-cover">
+                        
+                        <div class="absolute top-0 left-0 w-full p-6 flex justify-between items-start">
+                            <div class="border-l border-gold/50 pl-3">
+                                <p class="text-[8px] uppercase tracking-widest text-white/80">KAVRA Studio</p>
+                                <p class="text-[7px] uppercase tracking-[0.2em] text-gold mt-1">Ready to Wear</p>
+                            </div>
+                            <span class="text-[10px] font-mono text-white/20">/{{ forloop.counter }}</span>
+                        </div>
+
+                        <div class="absolute inset-0 hidden md:flex items-center justify-center">
+                            <div class="explore-btn absolute left-1/2 bottom-12 px-10 py-4 text-[10px] font-bold uppercase tracking-[0.4em] whitespace-nowrap">
+                                View Selection
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-baseline">
+                            <h3 class="text-xl md:text-2xl font-luxury uppercase tracking-widest transition-colors duration-500">{{ i.name }}</h3>
+                            <svg class="w-4 h-4 text-gold transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </div>
+                        <div class="title-underline"></div>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] leading-loose">
+                            Exploration of form and materiality. <br>Limited to 50 numbered pieces.
+                        </p>
+                    </div>
+                </a>
+            </article>
+            {% empty %}
+            <div class="col-span-full py-60 text-center flex flex-col items-center">
+                <div class="w-12 h-12 border border-white/10 flex items-center justify-center mb-6 animate-pulse">
+                    <span class="text-gold text-xs">!</span>
+                </div>
+                <p class="text-gray-600 uppercase tracking-[1em] text-[10px]">Vault Currently Sealed</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <section class="max-w-4xl mx-auto px-6 py-40 border-t border-white/5 text-center">
+        <div class="reveal js-reveal">
+            <h4 class="text-2xl font-luxury mb-8">Bespoke Inquiry</h4>
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] mb-10 leading-relaxed">
+                Interested in custom tailoring or archival pieces? <br>Consult with our concierge.
+            </p>
+            <a href="/contact" class="text-[10px] gold-text uppercase tracking-[0.4em] border border-gold/30 px-8 py-4 hover:bg-gold hover:text-black transition-all">Connect with Kavra</a>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center opacity-40">
+        <p class="text-[8px] uppercase tracking-[1em]">KAVRA // ARCHIVE 2026</p>
+    </footer>
+
+    <script>
+        // Smoother reveal observer
+        const revealOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -80px 0px"
+        };
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, index) => {
+                if(entry.isIntersecting) {
+                    // Slight delay for grid items
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, index % 3 * 100); 
+                }
+            });
+        }, revealOptions);
+
+        document.querySelectorAll('.js-reveal').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

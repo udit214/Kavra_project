@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ product.name }} | KAVRA Luxury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        
+        /* Mobile Sticky Button Shadow */
+        .sticky-action-bar { 
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .size-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .size-btn.active { 
+            border-color: var(--gold); 
+            color: var(--gold); 
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="pb-24 lg:pb-0">
+
+    <nav class="flex justify-between items-center px-6 md:px-12 py-5 sticky top-0 bg-black/95 backdrop-blur-xl z-50 border-b border-white/5">
+        <a href="javascript:history.back()" class="text-gray-500 hover:text-white transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
+        
+        <div class="text-xl font-luxury font-bold tracking-[0.3em] gold-text">
+            <a href="/">KAVRA</a>
+        </div>
+        
+        <a href="{% url 'cart_page' %}" class="relative">
+            <span class="text-xl">🛒</span>
+        </a>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-16">
+        <div class="flex flex-col lg:flex-row gap-10 lg:gap-20">
+            
+            <div class="w-full lg:w-3/5">
+                <div class="relative overflow-hidden bg-neutral-900 rounded-sm aspect-[3/4]">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4 border border-gold/30 px-3 py-1.5 bg-black/60 backdrop-blur-md text-[7px] md:text-[9px] tracking-[0.3em] uppercase gold-text">
+                        Archival Piece
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-2/5 space-y-8 md:space-y-12">
+                <header class="space-y-4">
+                    <p class="text-[9px] md:text-[10px] gold-text uppercase tracking-[0.5em] font-medium">Limited Production</p>
+                    <h1 class="text-3xl md:text-5xl font-luxury tracking-tight leading-tight">{{ product.name }}</h1>
+                    <p class="text-xl md:text-2xl font-light tracking-widest text-gray-200">${{ product.price }}</p>
+                </header>
+
+                <div class="space-y-4">
+                    <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500">The Narrative</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm font-light border-l border-gold/50 pl-6 py-1">
+                        {{ product.description }}
+                    </p>
+                </div>
+
+                <div class="hidden lg:block space-y-6">
+                    <div class="flex justify-between items-center text-[10px] uppercase tracking-widest">
+                        <span class="text-gray-500">Select Size</span>
+                        <span id="selection-status-desktop" class="gold-text opacity-0 transition-opacity italic">Selection Recorded</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-3">
+                        {% for variant in product.variants.all %}
+                            {% if variant.stock_quantity > 0 %}
+                                <button type="button" onclick="handleSizeSelect(this, '{{ variant.id }}')"
+                                    class="size-btn border border-white/10 py-4 text-center text-xs hover:border-white transition uppercase tracking-widest">
+                                    {{ variant.size }}
+                                </button>
+                            {% else %}
+                                <div class="border border-white/5 py-4 text-center text-xs text-gray-800 cursor-not-allowed uppercase tracking-widest relative overflow-hidden">
+                                    {{ variant.size }}
+                                    <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-[7px] rotate-12">Sold Out</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <button id="add-to-bag-btn-desktop" onclick="triggerAddToCart()" disabled
+                        class="w-full bg-neutral-900 text-gray-600 py-6 font-bold uppercase tracking-[0.3em] text-[11px] cursor-not-allowed transition-all duration-500">
+                        Select Your Size
+                    </button>
+                </div>
+
+                <div class="border-t border-white/5 pt-8 space-y-6">
+                    <details class="group">
+                        <summary class="flex justify-between items-center cursor-pointer list-none uppercase text-[9px] tracking-[0.3em] gold-text">
+                            Craftsmanship & Fit
+                            <span class="group-open:rotate-45 transition-transform text-lg">+</span>
+                        </summary>
+                        <div class="text-[11px] text-gray-500 mt-4 leading-relaxed tracking-widest space-y-2">
+                            <p>● Tailored silhouette, fits true to size.</p>
+                            <p>● 100% Premium archival textiles.</p>
+                            <p>● Dry clean only by specialists.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="flex justify-between items-center cursor-pointer list-none uppercase text-[9px] tracking-[0.3em] gold-text">
+                            Shipping & Concierge
+                            <span class="group-open:rotate-45 transition-transform text-lg">+</span>
+                        </summary>
+                        <p class="text-[11px] text-gray-500 mt-4 leading-relaxed tracking-widest">
+                            Complimentary express shipping on all orders. Each piece is delivered in a custom KAVRA archival box with a certificate of authenticity.
+                        </p>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="lg:hidden fixed bottom-0 left-0 w-full sticky-action-bar border-t border-white/10 p-4 z-50">
+        <div class="flex flex-col gap-4">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                {% for variant in product.variants.all %}
+                    {% if variant.stock_quantity > 0 %}
+                    <button type="button" onclick="handleSizeSelect(this, '{{ variant.id }}')"
+                        class="size-btn flex-none w-14 border border-white/20 py-3 text-[10px] text-center uppercase tracking-widest rounded-sm">
+                        {{ variant.size }}
+                    </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <button id="add-to-bag-btn-mobile" onclick="triggerAddToCart()" disabled
+                class="w-full bg-neutral-900 text-gray-600 py-4 font-bold uppercase tracking-[0.3em] text-[10px] cursor-not-allowed transition-all duration-500">
+                Choose Size
+            </button>
+        </div>
+    </div>
+
+    <footer class="mt-20 border-t border-white/5 py-16 px-8 text-center pb-32 lg:pb-16">
+        <div class="text-xl font-luxury gold-text mb-4 tracking-widest">KAVRA</div>
+        <p class="text-gray-600 text-[8px] uppercase tracking-[0.8em]">Bespoke Luxury Architecture</p>
+    </footer>
+
+    <script>
+        let currentVariant = null;
+
+        function handleSizeSelect(btn, variantId) {
+            // 1. Reset all size buttons (Mobile & Desktop)
+            document.querySelectorAll('.size-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+
+            // 2. Activate all buttons that match this variant (if same size exists on mobile/desktop)
+            // This ensures both UI elements stay in sync
+            document.querySelectorAll(`.size-btn`).forEach(b => {
+                if(b.getAttribute('onclick').includes(variantId)) {
+                    b.classList.add('active');
+                }
+            });
+
+            // 3. Update global state
+            currentVariant = variantId;
+
+            // 4. Update Buttons (Desktop & Mobile)
+            const buttons = [
+                document.getElementById('add-to-bag-btn-desktop'),
+                document.getElementById('add-to-bag-btn-mobile')
+            ];
+
+            buttons.forEach(btn => {
+                if(btn) {
+                    btn.disabled = false;
+                    btn.innerText = "Confirm & Add to Bag";
+                    btn.classList.remove('bg-neutral-900', 'text-gray-600', 'cursor-not-allowed');
+                    btn.classList.add('gold-bg', 'text-black', 'cursor-pointer');
+                }
+            });
+
+            document.getElementById('selection-status-desktop').classList.remove('opacity-0');
+        }
+
+        function triggerAddToCart() {
+            if (currentVariant) {
+                window.location.href = `/cart/add/${currentVariant}/`;
+            }
+        }
+    </script>
+
+</body>
+</html>

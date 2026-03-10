@@ -1,0 +1,237 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Site Configurations | KAVRA Admin{% endblock %}
+
+{% block content %}
+<main class="flex-1 p-8 lg:p-12 max-w-6xl">
+    <header class="mb-10">
+        <h1 class="text-2xl font-semibold uppercase tracking-tight">Site Configurations</h1>
+        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Global controls for store behavior, landing page hero, and brand narrative.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+        
+        <div class="space-y-1">
+            <button onclick="showSection('general', this)" class="tab-btn w-full text-left px-4 py-3 rounded text-xs font-bold uppercase tracking-widest gold-text bg-white/5 transition">
+                General Settings
+            </button>
+            <button onclick="showSection('landing', this)" class="tab-btn w-full text-left px-4 py-3 rounded text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-white transition">
+                Landing Page
+            </button>
+            <button onclick="showSection('story', this)" class="tab-btn w-full text-left px-4 py-3 rounded text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-white transition">
+                Our Story Page
+            </button>
+        </div>
+
+        <div class="md:col-span-3">
+            
+            <form id="general" class="settings-section space-y-8" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="general">
+                
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Store Identity</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Store Name</label>
+                            <input type="text" name="store_name" value="{{ site.Store_name }}">
+                        </div>
+                       
+                    </div>
+                </section>
+
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Social & System</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Instagram Handle</label>
+                            <input type="text" name="instagram" value="{{ site.Instagram }}" placeholder="@kavra_luxury">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Contact Email</label>
+                            <input type="email" name="contact" value="{{ site.contact }}">
+                        </div>
+                        
+                    </div>
+                </section>
+
+                
+
+                <div class="flex justify-end">
+                    <button type="submit" class="px-10 py-3 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 shadow-lg shadow-gold/10 transition">Save General Settings</button>
+                </div>
+            </form>
+
+            <form id="landing" class="settings-section hidden space-y-8" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="landing">
+                
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Hero Section</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Heading Word 1</label>
+                            <input type="text" name="h1_w1" value="{{ site.heading1_word1 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Heading Word 2</label>
+                            <input type="text" name="h1_w2" value="{{ site.heading1_word2 }}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Subheading 1 (Long)</label>
+                            <input type="text" name="sub1" value="{{ site.subheading1 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Subheading 2 (Short)</label>
+                            <input type="text" name="sub2" value="{{ site.subheading2 }}">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] text-gray-500 uppercase">Secondary Heading (Heading 2)</label>
+                        <input type="text" name="h2" value="{{ site.heading2 }}">
+                    </div>
+                </section>
+
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Call to Action Buttons</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Button 1 Label</label>
+                            <input type="text" name="btn1" value="{{ site.button1_text }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Button 2 Label</label>
+                            <input type="text" name="btn2" value="{{ site.button2_text }}">
+                        </div>
+                    </div>
+                </section>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="px-10 py-3 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 shadow-lg shadow-gold/10 transition">Update Landing Page</button>
+                </div>
+            </form>
+
+            <form id="story" class="settings-section hidden space-y-8" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="story">
+                
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Introduction & Paragraph 1</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Subheading 1</label>
+                            <input type="text" name="s_sub1" value="{{ site.s_subheading1 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Main Heading 1</label>
+                            <input type="text" name="s_h1" value="{{ site.s_heading1 }}">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] text-gray-500 uppercase">Subheading 2</label>
+                        <input type="text" name="s_sub2" value="{{ site.s_subheading2 }}">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] text-gray-500 uppercase">Paragraph 1</label>
+                        <textarea name="s_p1" rows="3">{{ site.s_paragraph1 }}</textarea>
+                    </div>
+                </section>
+
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">The Narrative (Headings & Body)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">H2 Word 1</label>
+                            <input type="text" name="s_h2_w1" value="{{ site.s_h2_word1 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">H2 Word 2</label>
+                            <input type="text" name="s_h2_word2" value="{{ site.s_h2_word2 }}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Paragraph 2</label>
+                            <textarea name="s_p2" rows="3">{{ site.s_paragraph2 }}</textarea>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Paragraph 3</label>
+                            <textarea name="s_p3" rows="3">{{ site.s_paragraph3 }}</textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card p-8 space-y-6">
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] gold-text font-bold">Philosophy & Bottom Blocks</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Heading 3</label>
+                            <input type="text" name="s_h3" value="{{ site.s_heading3 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Subheading 3</label>
+                            <input type="text" name="s_sub3" value="{{ site.s_subheading3 }}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Heading 4</label>
+                            <input type="text" name="s_h4" value="{{ site.s_heading4 }}">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Subheading 4</label>
+                            <input type="text" name="s_sub4" value="{{ site.s_subheading4 }}">
+                        </div>
+                    </div>
+                </section>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="px-10 py-3 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 shadow-lg shadow-gold/10 transition">Save Brand Story</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>
+
+<script>
+    function showSection(sectionId, btnElement) {
+        document.querySelectorAll('.settings-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        const target = document.getElementById(sectionId);
+        if (target) { target.classList.remove('hidden'); }
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('gold-text', 'bg-white/5');
+            btn.classList.add('text-gray-500');
+        });
+        btnElement.classList.add('gold-text', 'bg-white/5');
+        btnElement.classList.remove('text-gray-500');
+    }
+</script>
+
+<style>
+    input, select, textarea { 
+        background-color: #0F0F0F !important; 
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        color: white !important;
+        padding: 12px 16px !important;
+        font-size: 0.75rem;
+        border-radius: 2px;
+        outline: none;
+        width: 100%;
+    }
+    input:focus, textarea:focus { border-color: #D4AF37 !important; }
+    .gold-bg { background-color: #D4AF37; }
+    .gold-text { color: #D4AF37; }
+    .card { background-color: #1A1A1A; border: 1px solid rgba(255,255,255,0.05); }
+    .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.05); }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 2px; background-color: #555; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: rgba(212, 175, 55, 0.2); border-color: #D4AF37; }
+    input:checked + .slider:before { transform: translateX(22px); background-color: #D4AF37; }
+</style>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block content %}
+<div class="p-8 max-w-4xl">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-luxury gold-text uppercase tracking-widest">Edit Collection</h1>
+        <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em]">Editing: {{ collection.name }}</p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        <section class="card p-8 space-y-6">
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500">Collection Name</label>
+                <input type="text" name="name" value="{{ collection.name }}" required 
+                       class="bg-black border border-white/10 p-4 outline-none focus:border-gold transition">
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500">Description</label>
+                <textarea name="description" rows="5" 
+                          class="bg-black border border-white/10 p-4 outline-none focus:border-gold transition">{{ collection.description }}</textarea>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500">Current Cover</label>
+                {% if collection.image %}
+                    <div class="w-32 aspect-[4/5] overflow-hidden border border-white/10 mb-2">
+                        <img src="{{ collection.image.url }}" class="w-full h-full object-cover">
+                    </div>
+                {% endif %}
+                <input type="file" name="image" class="text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:uppercase file:gold-bg file:text-black file:font-bold">
+                <p class="text-[9px] text-gray-600 italic mt-1">Leave empty to keep current image.</p>
+            </div>
+
+            <div class="pt-4 flex gap-4">
+                <a href="{% url 'manage_collections' %}" class="flex-1 py-4 border border-white/10 text-white text-center font-bold uppercase tracking-[0.3em] text-xs hover:bg-white/5 transition">Cancel</a>
+                <button type="submit" class="flex-[2] py-4 gold-bg text-black font-bold uppercase tracking-[0.3em] text-xs shadow-lg shadow-gold/20">Update Collection</button>
+            </div>
+        </section>
+    </form>
+</div>
+{% endblock %}

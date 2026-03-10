@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KAVRA Admin{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --card-bg: #1A1A1A; }
+        body { font-family: 'Inter', sans-serif; background-color: #0A0A0A; color: #E5E5E5; margin-bottom: 70px; }
+        @media (min-width: 768px) { body { margin-bottom: 0; } }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        .sidebar-link { transition: all 0.3s ease; border-right: 3px solid transparent; }
+        .sidebar-link:hover, .sidebar-link.active { background: rgba(212, 175, 55, 0.1); border-right: 3px solid var(--gold); color: white; }
+        .card { background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); }
+        input, select, textarea { background-color: #0F0F0F !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; padding: 10px !important; border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <aside class="w-64 border-r border-white/10 hidden md:flex flex-col sticky top-0 h-screen shrink-0">
+        <div class="p-8 text-xl font-bold tracking-[0.3em] gold-text border-b border-white/10">KAVRA</div>
+        <nav class="flex-1 mt-6 space-y-1">
+            <a href="{% url 'dashboard_home' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'dashboard_home' %}active gold-text{% else %}text-gray-400{% endif %}">📊 Dashboard</a>
+            
+            <a href="{% url 'analytics' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'analytics' %}active gold-text{% else %}text-gray-400{% endif %}">📈 Analytics</a>
+            
+            <a href="{% url 'orders' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'orders' %}active gold-text{% else %}text-gray-400{% endif %}">📦 Orders</a>
+            
+            <a href="{% url 'manage_collections' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if 'collection' in request.path %}active gold-text{% else %}text-gray-400{% endif %}">✨ Collections</a>
+
+            <a href="{% url 'inventory' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if 'inventory' in request.path or 'product' in request.path %}active gold-text{% else %}text-gray-400{% endif %}">👕 Inventory</a>
+            
+            <a href="{% url 'customers' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'customers' %}active gold-text{% else %}text-gray-400{% endif %}">👥 Customers</a>
+            
+            <a href="{% url 'settings' %}" class="sidebar-link flex items-center px-8 py-4 text-sm {% if request.resolver_match.url_name == 'site_settings' %}active gold-text{% else %}text-gray-400{% endif %}">⚙️ Site Settings</a>
+        </nav>
+        <div class="p-6 border-t border-white/10 text-[10px] text-gray-600 uppercase tracking-widest">
+            <p>Admin: {{ request.user.username }}</p>
+            <a href="{% url 'admin_logout' %}" class="text-red-500 mt-2 block hover:underline">Logout →</a>
+        </div>
+    </aside>
+
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 flex justify-around items-center py-3 z-50">
+        <a href="{% url 'dashboard_home' %}" class="flex flex-col items-center {% if request.resolver_match.url_name == 'dashboard_home' %}gold-text{% else %}text-gray-500{% endif %}"><span class="text-lg">📊</span></a>
+        
+        <a href="{% url 'analytics' %}" class="flex flex-col items-center {% if request.resolver_match.url_name == 'analytics' %}gold-text{% else %}text-gray-500{% endif %}"><span class="text-lg">📈</span></a>
+        
+        <a href="{% url 'manage_collections' %}" class="flex flex-col items-center {% if 'collection' in request.path %}gold-text{% else %}text-gray-500{% endif %}"><span class="text-lg">✨</span></a>
+        
+        <a href="{% url 'inventory' %}" class="flex flex-col items-center {% if 'inventory' in request.path %}gold-text{% else %}text-gray-500{% endif %}"><span class="text-lg">👕</span></a>
+        <a href="{% url 'settings' %}" class="flex flex-col items-center {% if request.resolver_match.url_name == 'site_settings' %}gold-text{% else %}text-gray-500{% endif %}"><span class="text-lg">⚙️</span></a>
+    </nav>
+
+    <main class="flex-1">
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-[100] space-y-2">
+                {% for message in messages %}
+                    <div class="px-6 py-3 {% if message.tags == 'success' %}bg-green-900/80 border-green-500{% else %}bg-red-900/80 border-red-500{% endif %} border text-white text-xs uppercase tracking-widest shadow-2xl backdrop-blur-md">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

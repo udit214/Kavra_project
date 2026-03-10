@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Collections | KAVRA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        
+        /* Entrance Stagger Effect */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Card Image Zoom */
+        .luxury-card:hover .card-image { transform: scale(1.08); filter: grayscale(0); }
+        .card-image { transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(0.4); }
+
+        /* Custom Hover Button */
+        .explore-btn {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .luxury-card:hover .explore-btn { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body class="bg-[#0A0A0A]">
+
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/5 px-6 py-5 flex justify-between items-center">
+        <a href="/" class="text-[10px] uppercase tracking-[0.4em] hover:gold-text transition">← Home</a>
+        <div class="text-xl font-luxury gold-text tracking-[0.3em]">KAVRA</div>
+        <a href="/cart" class="text-[10px] uppercase tracking-[0.4em] hover:gold-text transition">Bag</a>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-6 pt-32 pb-16 md:pt-48 md:pb-24 text-center">
+        <h2 class="text-[9px] md:text-[11px] gold-text uppercase tracking-[1em] mb-6 reveal js-reveal">The Archive</h2>
+        <h1 class="text-4xl md:text-8xl font-luxury uppercase tracking-tighter leading-none reveal js-reveal">Seasonal <span class="italic text-white">Series</span></h1>
+        <div class="w-16 h-px bg-gold/40 mx-auto mt-12 reveal js-reveal"></div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-6 mb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-24">
+            
+            {% for i in collections %}
+            <div class="reveal js-reveal luxury-card group cursor-pointer">
+                <a href="all_products-{{i.slug}}" class="block">
+                    <div class="relative overflow-hidden aspect-[3/4] bg-neutral-900 mb-8 rounded-sm">
+                        <img src="{{ i.image.url }}" 
+                             alt="{{ i.name }}"
+                             class="card-image w-full h-full object-cover">
+                        
+                        <div class="absolute top-5 left-5 border border-white/10 px-3 py-1.5 bg-black/40 backdrop-blur-md">
+                            <p class="text-[7px] uppercase tracking-[0.3em] text-gray-300 font-medium">Archival // 2026</p>
+                        </div>
+
+                        <div class="absolute inset-0 flex items-center justify-center p-6">
+                            <div class="explore-btn w-full max-w-[200px] text-center text-black py-4 text-[10px] font-bold uppercase tracking-[0.4em]">
+                                Open Archive
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-end border-b border-white/5 pb-4">
+                        <div class="space-y-1">
+                            <h3 class="text-lg md:text-xl font-luxury uppercase tracking-widest group-hover:gold-text transition-colors duration-500">{{ i.name }}</h3>
+                            <p class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-[0.5em] font-light">Limited Release</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] font-luxury text-gold/50 block">Vol.</span>
+                            <span class="text-[11px] font-mono opacity-40">0{{ forloop.counter }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-40 text-center border border-white/5">
+                <p class="text-gray-600 uppercase tracking-[1em] text-[10px]">Curation in Progress</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <footer class="py-20 text-center border-t border-white/5">
+        <div class="text-xl font-luxury gold-text mb-4 tracking-[0.3em]">KAVRA</div>
+        <p class="text-gray-700 text-[8px] uppercase tracking-[1em]">Excellence through Architecture</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        document.querySelectorAll('.js-reveal').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

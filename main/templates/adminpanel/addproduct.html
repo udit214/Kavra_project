@@ -1,0 +1,143 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Create Piece | KAVRA Admin{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data" class="flex flex-col h-full">
+    {% csrf_token %}
+    
+    <div class="p-8 lg:p-12">
+        <header class="mb-10 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-semibold uppercase tracking-tight">Create New Piece</h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Design the next addition to the Kavra legacy.</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="{% url 'inventory' %}" class="px-6 py-2 border border-white/10 text-[10px] uppercase tracking-widest hover:bg-white/5 transition flex items-center">Cancel</a>
+                <button type="submit" class="px-8 py-2 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 transition shadow-lg shadow-gold/20">Publish Product</button>
+            </div>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-10">
+            <div class="flex-1 space-y-8">
+                <section class="card p-8 space-y-6 bg-neutral-900 border border-white/5">
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] gold-text border-b border-white/5 pb-4">General Information</h3>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Product Name</label>
+                            <input type="text" name="name" id="inputName" placeholder="e.g. Midnight Silk Kimono" class="bg-black border border-white/10 p-3 outline-none focus:border-gold transition" required oninput="updatePreview()">
+                        </div>
+                        <div class="flex flex-col gap-2">
+    <label class="text-[10px] uppercase text-gray-500 tracking-widest">SKU</label>
+    <p class="text-[10px] text-gray-400 italic">
+        SKU will be automatically generated when the product is published.
+    </p>
+</div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Description</label>
+                            <textarea name="description" rows="4" placeholder="Describe the craftsmanship..." class="bg-black border border-white/10 p-3 outline-none focus:border-gold transition" required></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card p-8 bg-neutral-900 border border-white/5">
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] gold-text border-b border-white/5 pb-4 mb-6">Pricing & Categorization</h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Price ($)</label>
+                            <input type="number" step="0.01" name="price" id="inputPrice" placeholder="249.00" class="bg-black border border-white/10 p-3 outline-none focus:border-gold transition" required oninput="updatePreview()">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Collection</label>
+                            <select name="collection" id="inputCollection" class="bg-black border border-white/10 p-3 outline-none focus:border-gold transition" required onchange="updatePreview()">
+                                <option value="" disabled selected>Select Collection</option>
+                                {% for col in collections %}
+                                    <option value="{{ col.id }}">{{ col.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card p-8 bg-neutral-900 border border-white/5">
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] gold-text border-b border-white/5 pb-4 mb-6">Sizing & Inventory</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-4 gap-4 text-center border-b border-white/5 pb-2">
+                            <label class="text-[10px] text-gray-500 uppercase">Size</label>
+                            <label class="text-[10px] text-gray-500 uppercase">Stock Qty</label>
+                            <label class="text-[10px] text-gray-500 uppercase">Suffix</label>
+                            <label class="text-[10px] text-gray-500 uppercase">Status</label>
+                        </div>
+                        
+                        {% for size_code, size_name in sizes %}
+                        <div class="grid grid-cols-4 gap-4 items-center">
+                            <span class="text-sm font-bold text-white">{{ size_name }}</span>
+                            <input type="number" name="qty_{{ size_code }}" value="0" class="bg-black border border-white/10 text-center py-2 rounded focus:border-gold outline-none" min="0">
+                            <span class="text-[10px] opacity-40 font-mono text-center">-{{ size_code }}</span>
+                            <div class="flex justify-center"><div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <div class="w-full lg:w-[350px] space-y-8">
+                <section class="card p-6 bg-neutral-900 border border-white/5">
+                    <h3 class="text-xs font-bold uppercase tracking-widest mb-4">Product Image</h3>
+                    <input type="file" name="product_image" id="imgInput" class="hidden" accept="image/*" onchange="previewImage(event)" required>
+                    <label for="imgInput" class="border-2 border-dashed border-white/10 p-10 text-center hover:border-gold transition cursor-pointer block group">
+                        <span class="text-2xl group-hover:scale-110 inline-block transition">📸</span>
+                        <p class="text-[10px] text-gray-500 uppercase mt-2">Upload High-Res Media</p>
+                    </label>
+                </section>
+
+                <div class="sticky top-10">
+                    <p class="text-[9px] uppercase tracking-[0.3em] text-gray-500 mb-2">Live Preview</p>
+                    <div class="card overflow-hidden shadow-2xl border-none">
+                        <div class="aspect-[4/5] bg-[#0F0F0F] flex items-center justify-center overflow-hidden">
+                            <img id="imgPreview" class="w-full h-full object-cover hidden">
+                            <span id="placeholderText" class="text-gray-700 italic text-xs">Awaiting Media...</span>
+                        </div>
+                        <div class="p-4 bg-black border-t border-white/5">
+                            <p id="previewCol" class="text-[8px] gold-text uppercase tracking-widest mb-1">Collection</p>
+                            <h4 id="previewTitle" class="text-sm tracking-widest uppercase text-white">Product Title</h4>
+                            <p class="text-xs mt-2 text-gray-400">$<span id="previewPrice">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const output = document.getElementById('imgPreview');
+            const placeholder = document.getElementById('placeholderText');
+            output.src = reader.result;
+            output.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function updatePreview() {
+        const name = document.getElementById('inputName').value;
+        const price = document.getElementById('inputPrice').value;
+        const collection = document.getElementById('inputCollection');
+        const collectionText = collection.selectedIndex >= 0 ? collection.options[collection.selectedIndex].text : "Collection";
+
+        document.getElementById('previewTitle').innerText = name || "Product Title";
+        document.getElementById('previewPrice').innerText = price || "0.00";
+        document.getElementById('previewCol').innerText = (collection.value) ? collectionText : "Collection";
+    }
+</script>
+
+<style>
+    .gold-bg { background-color: #D4AF37; }
+    .gold-text { color: #D4AF37; }
+    .card { background-color: #1A1A1A; }
+</style>
+{% endblock %}

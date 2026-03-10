@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{genral_settings.Store_name}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --black: #0A0A0A; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--black); color: white; -webkit-tap-highlight-color: transparent; }
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        .gold-border { border-color: var(--gold); }
+        
+        /* Smooth Mobile Scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Amazon-style Image Aspect Ratio */
+        .aspect-luxury { aspect-ratio: 3/4; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <nav class="flex justify-between items-center px-6 py-5 sticky top-0 bg-black/95 backdrop-blur-xl z-50 border-b border-white/5">
+    <button onclick="toggleMenu()" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8h16M4 16h16" />
+        </svg>
+    </button>
+
+    <div class="text-xl md:text-2xl font-luxury font-bold tracking-[0.3em] gold-text absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+        KAVRA
+    </div>
+    
+    <div class="hidden md:flex space-x-10 text-[11px] uppercase tracking-[0.3em] font-medium">
+        <a href="all_products-all_products" class="hover:gold-text transition-colors">Archive</a>
+        <a href="ourstory" class="hover:gold-text transition-colors">The House</a>
+        <a href="ourstory" class="hover:gold-text transition-colors">More With Us</a>
+    </div>
+
+    <div class="flex items-center">
+        <a href="cart" class="relative group">
+            <span class="text-xl">🛒</span>
+        </a>
+    </div>
+</nav>
+
+<div id="mobile-menu" class="fixed inset-0 bg-black z-[100] translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+    <div class="flex flex-col h-full p-8">
+        <div class="flex justify-end">
+            <button onclick="toggleMenu()" class="text-white text-3xl font-light">&times;</button>
+        </div>
+        
+        <div class="flex flex-col space-y-8 mt-20 text-center">
+            <a href="all_products-all_products" onclick="toggleMenu()" class="text-2xl font-luxury tracking-[0.2em] uppercase hover:gold-text">Archive</a>
+            <a href="ourstory" onclick="toggleMenu()" class="text-2xl font-luxury tracking-[0.2em] uppercase hover:gold-text">The House</a>
+            <a href="ourstory" onclick="toggleMenu()" class="text-2xl font-luxury tracking-[0.2em] uppercase hover:gold-text">More With Us</a>
+            <a href="ourstory" onclick="toggleMenu()" class="text-2xl font-luxury tracking-[0.2em] uppercase hover:gold-text">Bulk orderning</a>
+            
+            <hr class="border-white/10 w-20 mx-auto">
+            <a href="cart" onclick="toggleMenu()" class="text-sm tracking-[0.5em] uppercase text-gray-500">View Bag</a>
+        </div>
+
+        <div class="mt-auto text-center pb-10">
+            <p class="text-[9px] uppercase tracking-widest text-gray-600">KAVRA Luxury Apparel</p>
+        </div>
+    </div>
+</div>
+
+
+    <section class="relative h-[80vh] md:h-[90vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black z-10"></div>
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=2070" 
+             class="absolute inset-0 w-full h-full object-cover opacity-50 scale-105" alt="Hero Image">
+        
+        <div class="relative z-20 text-center px-6">
+            <h1 class="text-4xl md:text-8xl font-luxury mb-4 tracking-tight leading-tight">
+                {{content.heading1_word1}} <br class="md:hidden"> <span class="gold-text">{{content.heading1_word2}}</span>
+            </h1>
+            <p class="text-gray-400 text-xs md:text-lg max-w-xl mx-auto mb-10 font-light tracking-widest uppercase">
+                {{content.subheading1}}
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <a href="all_products-all_products" class="w-full md:w-auto">
+                    <button class="w-full md:w-auto gold-bg text-black px-12 py-4 text-[11px] font-bold uppercase tracking-[0.3em] hover:brightness-110 transition duration-500">
+                        {{content.button1_text}}
+                    </button>
+                </a>
+                <a href="/lookbook" class="w-full md:w-auto">
+                    <button class="w-full md:w-auto border border-white/20 text-white px-12 py-4 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-white hover:text-black transition duration-500">
+                        {{content.button2_text}}
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-24 px-4 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <header class="mb-10 md:mb-16">
+                <span class="text-[10px] gold-text uppercase tracking-[0.5em] mb-2 block">{{content.subheading2}}</span>
+                <h2 class="text-2xl md:text-4xl font-luxury uppercase tracking-widest"></h2>
+            </header>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
+                
+                {% for i in collections %}
+                <a href='all_products-{{i.slug}}' class="group">
+                    <div class="relative overflow-hidden aspect-luxury bg-neutral-900 mb-4 rounded-sm">
+                        <img src="{{ i.image.url }}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
+                        
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition duration-500"></div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/80 backdrop-blur-md hidden md:block">
+                            <span class="block w-full py-2 text-center gold-text text-[10px] font-bold uppercase tracking-widest">Discover</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase">{{ i.name }}</h3>
+                        <span class="text-[10px] text-gray-500">→</span>
+                    </div>
+                </a>
+                {% endfor %}
+
+                {% if collections.count < 3 %}
+                    {% for _ in "123"|make_list %}
+                        {% if forloop.counter > collections.count %}
+                        <div class="opacity-30 select-none">
+                            <div class="relative overflow-hidden aspect-luxury border border-white/5 bg-neutral-900/40 flex flex-col items-center justify-center p-4 mb-4 rounded-sm">
+                                <span class="gold-text text-[8px] md:text-[10px] tracking-[0.4em] uppercase mb-1">Locked</span>
+                                <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-widest">Coming Soon</p>
+                            </div>
+                            <h3 class="text-[9px] md:text-xs font-medium text-gray-700 tracking-widest uppercase italic">Vault Entry</h3>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 py-16 px-6 text-center">
+        <div class="text-2xl font-luxury gold-text mb-6 tracking-[0.5em]">KAVRA</div>
+        <div class="flex justify-center space-x-6 mb-8 text-[10px] uppercase tracking-widest text-gray-400">
+            <a href="#" class="hover:text-white transition">Instagram</a>
+            <a href="#" class="hover:text-white transition">Privacy</a>
+            <a href="#" class="hover:text-white transition">Contact</a>
+        </div>
+        <p class="text-[9px] text-gray-600 uppercase tracking-widest">&copy; 2026 KAVRA Luxury Apparel. Crafted for the bold.</p>
+    </footer>
+
+</body>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('translate-x-full');
+    }
+</script>
+</html>

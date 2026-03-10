@@ -1,0 +1,100 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Client Directory | KAVRA Admin{% endblock %}
+
+{% block content %}
+<main class="flex-1 p-8 lg:p-12">
+    <header class="mb-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+            <h1 class="text-2xl font-semibold uppercase tracking-tight">Client Directory</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Manage relationships and track high-value patrons.</p>
+        </div>
+        <div class="flex flex-wrap gap-4 w-full lg:w-auto">
+            <form method="GET" action="{% url 'customers' %}" class="relative flex-1 lg:flex-none">
+                <input type="text" name="search" value="{{ query }}" placeholder="Search by name or email..." 
+                       class="bg-neutral-900 border border-white/10 text-xs px-10 py-2.5 rounded-sm w-full lg:w-64 outline-none focus:border-gold transition text-white">
+                <span class="absolute left-3 top-3 opacity-30 text-xs">🔍</span>
+            </form>
+            <button class="px-6 py-2.5 gold-bg text-black font-bold text-[10px] uppercase tracking-widest hover:brightness-110 transition">
+                Export CSV
+            </button>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="card p-6 border-l-2 border-white/10">
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-2">Total Clients</p>
+            <p class="text-3xl font-bold tracking-tighter">{{ total_clients }}</p>
+        </div>
+        <div class="card p-6 border-l-2 border-gold">
+            <p class="text-[10px] gold-text uppercase tracking-[0.2em] mb-2">VIP Members</p>
+            <p class="text-3xl font-bold tracking-tighter gold-text">{{ vip_count }}</p>
+        </div>
+        <div class="card p-6 border-l-2 border-white/10">
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-2">Avg. Order Value</p>
+            <p class="text-3xl font-bold tracking-tighter">${{ avg_order|floatformat:2 }}</p>
+        </div>
+    </div>
+
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm min-w-[800px]">
+                <thead class="bg-white/5 text-[10px] uppercase tracking-[0.2em] text-gray-500">
+                    <tr>
+                        <th class="p-6">Client Name</th>
+                        <th class="p-6">Status/Tier</th>
+                        <th class="p-6 text-center">Orders</th>
+                        <th class="p-6">Total Spent</th>
+                        <th class="p-6">Last Active</th>
+                        <th class="p-6 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for customer in customers %}
+                    <tr class="hover:bg-white/[0.02] transition group">
+                        <td class="p-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-9 h-9 rounded-full {% if customer.is_vip %}bg-gold/20 gold-text border border-gold/30{% else %}bg-white/5 text-gray-400{% endif %} flex items-center justify-center text-[11px] font-bold">
+                                    {{ customer.first_name|slice:":1" }}{{ customer.last_name|slice:":1" }}
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white">{{ customer.first_name }} {{ customer.last_name }}</p>
+                                    <p class="text-[10px] text-gray-500 lowercase tracking-tight">{{ customer.email }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-6">
+                            {% if customer.is_vip %}
+                                <span class="px-3 py-1 text-[8px] font-bold uppercase rounded-full bg-gold/10 gold-text border border-gold/20 italic tracking-widest">VIP Gold</span>
+                            {% else %}
+                                <span class="px-3 py-1 text-[8px] font-bold uppercase rounded-full bg-white/5 text-gray-500 border border-white/5 italic tracking-widest">Member</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-6 text-center font-mono text-xs text-gray-400">
+                            {{ customer.order_count }} <span class="text-[9px] opacity-50 uppercase ml-1">Orders</span>
+                        </td>
+                        <td class="p-6 font-bold text-white tracking-tight">
+                            ${{ customer.total_spent|floatformat:2 }}
+                        </td>
+                        <td class="p-6 text-[10px] text-gray-500 uppercase tracking-widest">
+                            {{ customer.last_active|timesince }} ago
+                        </td>
+                        <td class="p-6 text-right">
+                            <a href="#" class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-gold border border-white/10 hover:border-gold/50 px-4 py-2 transition">
+                                Profile
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="p-20 text-center text-gray-600 uppercase text-[10px] tracking-[0.4em]">
+                            No clients matching your search.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

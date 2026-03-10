@@ -1,0 +1,161 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Executive Insights | KAVRA Admin{% endblock %}
+
+{% block content %}
+<main class="flex-1 p-8">
+    <header class="mb-10 flex justify-between items-end">
+        <div>
+            <h1 class="text-2xl font-semibold uppercase tracking-tight">Executive Insights</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Filtered by: Last 30 Days</p>
+        </div>
+        <button onclick="window.print()" class="text-[10px] border border-white/20 px-4 py-2 uppercase tracking-widest hover:bg-white hover:text-black transition">
+            Print Report
+        </button>
+    </header>
+
+    <div class="card p-8 mb-6 bg-[#1A1A1A] border border-white/5">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400">Net Sales Trend</h3>
+                <p class="text-3xl font-light mt-1 gold-text">${{ total_sales|floatformat:2 }}</p>
+            </div>
+            <div class="text-right">
+                <span class="{% if growth >= 0 %}text-green-500{% else %}text-red-500{% endif %} text-xs font-bold">
+                    {% if growth >= 0 %}↑{% else %}↓{% endif %} {{ growth }}%
+                </span>
+                <p class="text-[10px] text-gray-600 uppercase mt-1">vs Previous Month</p>
+            </div>
+        </div>
+        <div class="h-[250px]">
+            <canvas id="mainRevenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="card p-8 bg-[#1A1A1A] border border-white/5">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">COD vs. Digital Payment</h3>
+            <div class="flex items-center gap-8">
+                <div class="w-1/2">
+                    <canvas id="paymentPieChart"></canvas>
+                </div>
+                <div class="w-1/2 space-y-4">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">Prepaid (Secure)</p>
+                        <p class="text-xl font-semibold">{{ prepaid_pct }}%</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase italic tracking-widest">Cash on Delivery</p>
+                        <p class="text-xl font-semibold gold-text">{{ cod_pct }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8 bg-[#1A1A1A] border border-white/5">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">Best Selling Pieces</h3>
+            <div class="space-y-6">
+                {% for product in best_sellers %}
+                <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                    <div class="flex items-center gap-3">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="w-8 h-10 object-cover opacity-80">
+                        {% endif %}
+                        <span class="text-sm font-light tracking-wide">{{ product.name }}</span>
+                    </div>
+                    <span class="text-xs gold-text font-mono">{{ product.sales_count|default:"0" }} Sales</span>
+                </div>
+                {% empty %}
+                <p class="text-[10px] text-gray-500 uppercase">No sales data recorded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Global Styling for Charts
+    Chart.defaults.color = '#555';
+    Chart.defaults.font.family = 'Inter';
+
+    // 1. Revenue Line Chart
+    const ctxRevenue = document.getElementById('mainRevenueChart').getContext('2d');
+    const revenueGradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
+    revenueGradient.addColorStop(0, 'rgba(212, 175, 55, 0.1)');
+    revenueGradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+
+    new Chart(ctxRevenue, {
+        type: 'line',
+        data: {
+            labels: {{ revenue_labels|safe }}, 
+            datasets: [{
+                label: 'Revenue',
+                data: {{ revenue_data|safe }},
+                borderColor: '#D4AF37',
+                backgroundColor: revenueGradient,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#D4AF37',
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { 
+                y: { 
+                    grid: { color: 'rgba(255,255,255,0.05)' }, 
+                    ticks: { color: '#888', font: { size: 10 } } 
+                },
+                x: { 
+                    grid: { display: false }, 
+                    ticks: { color: '#888', font: { size: 10 } } 
+                }
+            }
+        }
+    });
+
+    // 2. Payment Pie Chart
+    new Chart(document.getElementById('paymentPieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Prepaid', 'COD'],
+            datasets: [{
+                data: [{{ prepaid_pct }}, {{ cod_pct }}],
+                backgroundColor: ['#D4AF37', '#222'],
+                hoverBackgroundColor: ['#E5C04A', '#333'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.label}: ${context.raw}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+    .gold-text { color: #D4AF37; }
+    @media print {
+        aside, button { display: none !important; }
+        body { background: white; color: black; }
+        .card { border: 1px solid #eee; background: white; }
+    }
+</style>
+{% endblock %}
