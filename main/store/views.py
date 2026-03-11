@@ -168,7 +168,6 @@ def RemoveFromCart(request, variant_id):
     return redirect('cart_page')
 
 def Checkout(request):
-    # 1. Retrieve the cart from session
     cart = request.session.get('cart', {})
     if not cart:
         return redirect('cart_page')
@@ -177,86 +176,79 @@ def Checkout(request):
     total_price = 0
     invalid_ids = []
 
-    # 2. Validate items in cart against the Server Database
+    # 1. Validate Items
     for variant_id, quantity in cart.items():
         try:
-            # We use .select_related to optimize the query for variant.product
             variant = ProductVariant.objects.select_related('product').get(id=variant_id)
             line_total = variant.product.price * quantity
             total_price += line_total
-            bag_items.append({
-                'variant': variant, 
-                'quantity': quantity, 
-                'line_total': line_total
-            })
+            bag_items.append({'variant': variant, 'quantity': quantity, 'line_total': line_total})
         except (ProductVariant.DoesNotExist, ValueError):
-            # If the ID doesn't exist on this server, mark it for removal
             invalid_ids.append(variant_id)
 
-    # 3. Handle Invalid Items (Prevention of DoesNotExist error)
     if invalid_ids:
         for vid in invalid_ids:
-            del cart[vid]
+            if vid in cart: del cart[vid]
         request.session.modified = True
-        # If no valid items left, send back to cart
-        if not bag_items:
-            return redirect('cart_page')
+        if not bag_items: return redirect('cart_page')
 
-    # 4. Handle Order Placement
+    # 2. Process POST (Order Placement)
     if request.method == 'POST':
-        # Create the Order entry
-        order = Order.objects.create(
-            customer_email=request.POST.get('email'),
-            full_name=request.POST.get('full_name'),
-            phone=request.POST.get('phone'),
-            address=request.POST.get('address'),
-            city=request.POST.get('city'),
-            postal_code=request.POST.get('postal_code'),
-            total_amount=total_price,
-            payment_method=request.POST.get('payment_method'),
-            status='PENDING'
-        )
-
-        # Save individual items to OrderItem
-        for item in bag_items:
-            OrderItem.objects.create(
-                order=order,
-                product_variant=item['variant'],
-                price=item['variant'].product.price,
-                quantity=item['quantity']
+        try:
+            # Create the Order
+            order = Order.objects.create(
+                customer_email=request.POST.get('email'),
+                full_name=request.POST.get('full_name'),
+                phone=request.POST.get('phone'),
+                address=request.POST.get('address'),
+                city=request.POST.get('city'),
+                postal_code=request.POST.get('postal_code'),
+                total_amount=total_price,
+                payment_method=request.POST.get('payment_method'),
+                status='PENDING'
             )
 
-        # 5. Email Confirmation System
-        subject = f"Your KAVRA Selection: {order.order_id}"
-        from_email = settings.DEFAULT_FROM_EMAIL
-        to = order.customer_email
+            # Create Order Items
+            for item in bag_items:
+                OrderItem.objects.create(
+                    order=order,
+                    product_variant=item['variant'],
+                    price=item['variant'].product.price,
+                    quantity=item['quantity']
+                )
 
-        # Render high-end HTML email
-        html_content = render_to_string('email.html', {'order': order})
-        text_content = strip_tags(html_content)
+            # 3. Handle Email (Wrapped in a separate try-block to prevent 500 errors)
+            try:
+                subject = f"Your KAVRA Selection: {order.order_id}"
+                from_email = settings.DEFAULT_FROM_EMAIL
+                to = order.customer_email
+                html_content = render_to_string('email.html', {'order': order})
+                text_content = strip_tags(html_content)
 
-        try:
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            
-            # fail_silently=False helps you see errors in server logs
-            msg.send(fail_silently=False)
-        except Exception as e:
-            # Logs the error but allows the customer to reach the success page
-            print(f"CRITICAL: Email failed to send for Order {order.order_id}. Error: {e}")
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                
+                # Use fail_silently=True here so the USER doesn't see a 500 error 
+                # even if the SMTP server is down or slow.
+                msg.send(fail_silently=True) 
+            except Exception as email_err:
+                print(f"Email error: {email_err}") # This goes to your logs, not the user's screen
 
-        # 6. Success & Cleanup
-        request.session['cart'] = {}
-        request.session.modified = True
+            # 4. Success Actions
+            request.session['cart'] = {}
+            request.session.modified = True
+            return render(request, 'success.html', {'order': order})
 
-        return render(request, 'success.html', {'order': order})
+        except Exception as main_err:
+            # This catches database errors or unexpected issues
+            print(f"Checkout Error: {main_err}")
+            return render(request, 'checkoutpage.html', {
+                'bag_items': bag_items, 
+                'total_price': total_price,
+                'error': "An error occurred while processing your order. Please try again."
+            })
 
-    # Render checkout page for GET requests
-    context = {
-        'bag_items': bag_items, 
-        'total_price': total_price
-    }
-    return render(request, 'checkoutpage.html', context)
+    return render(request, 'checkoutpage.html', {'bag_items': bag_items, 'total_price': total_price})
 
 def lookbook(request):
     return render(request , 'lookbook.html')
