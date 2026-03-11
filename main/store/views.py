@@ -168,33 +168,56 @@ def RemoveFromCart(request, variant_id):
     return redirect('cart_page')
 
 def Checkout(request):
+    # 1. Retrieve the cart from session
     cart = request.session.get('cart', {})
     if not cart:
         return redirect('cart_page')
 
     bag_items = []
     total_price = 0
-    for variant_id, quantity in cart.items():
-        variant = ProductVariant.objects.get(id=variant_id)
-        line_total = variant.product.price * quantity
-        total_price += line_total
-        bag_items.append({'variant': variant, 'quantity': quantity, 'line_total': line_total})
+    invalid_ids = []
 
+    # 2. Validate items in cart against the Server Database
+    for variant_id, quantity in cart.items():
+        try:
+            # We use .select_related to optimize the query for variant.product
+            variant = ProductVariant.objects.select_related('product').get(id=variant_id)
+            line_total = variant.product.price * quantity
+            total_price += line_total
+            bag_items.append({
+                'variant': variant, 
+                'quantity': quantity, 
+                'line_total': line_total
+            })
+        except (ProductVariant.DoesNotExist, ValueError):
+            # If the ID doesn't exist on this server, mark it for removal
+            invalid_ids.append(variant_id)
+
+    # 3. Handle Invalid Items (Prevention of DoesNotExist error)
+    if invalid_ids:
+        for vid in invalid_ids:
+            del cart[vid]
+        request.session.modified = True
+        # If no valid items left, send back to cart
+        if not bag_items:
+            return redirect('cart_page')
+
+    # 4. Handle Order Placement
     if request.method == 'POST':
-        # Create Order using your updated model fields
+        # Create the Order entry
         order = Order.objects.create(
-            customer_email=request.POST['email'],
-            full_name=request.POST['full_name'],
-            phone=request.POST['phone'],
-            address=request.POST['address'],
-            city=request.POST['city'],
-            postal_code=request.POST['postal_code'],
+            customer_email=request.POST.get('email'),
+            full_name=request.POST.get('full_name'),
+            phone=request.POST.get('phone'),
+            address=request.POST.get('address'),
+            city=request.POST.get('city'),
+            postal_code=request.POST.get('postal_code'),
             total_amount=total_price,
-            payment_method=request.POST['payment_method'],
+            payment_method=request.POST.get('payment_method'),
             status='PENDING'
         )
 
-        # Save individual items
+        # Save individual items to OrderItem
         for item in bag_items:
             OrderItem.objects.create(
                 order=order,
@@ -202,33 +225,38 @@ def Checkout(request):
                 price=item['variant'].product.price,
                 quantity=item['quantity']
             )
-        # 1. Setup the Subject and Context
+
+        # 5. Email Confirmation System
         subject = f"Your KAVRA Selection: {order.order_id}"
         from_email = settings.DEFAULT_FROM_EMAIL
         to = order.customer_email
 
-        # 2. Render the HTML content
+        # Render high-end HTML email
         html_content = render_to_string('email.html', {'order': order})
-        text_content = strip_tags(html_content) # Create plain-text version for backup
+        text_content = strip_tags(html_content)
 
-        # 3. Create the email object
         try:
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html") # Attach the high-end version
-
-            # 4. Send
+            msg.attach_alternative(html_content, "text/html")
+            
+            # fail_silently=False helps you see errors in server logs
             msg.send(fail_silently=False)
-            # Clear the luxury bag
-            request.session['cart'] = {}
-            request.session.modified = True
         except Exception as e:
-            # This logs the error to your server console so you can read it,
-            # but it doesn't crash the page for the customer.
-            print(f"Email failed to send: {e}")
+            # Logs the error but allows the customer to reach the success page
+            print(f"CRITICAL: Email failed to send for Order {order.order_id}. Error: {e}")
+
+        # 6. Success & Cleanup
+        request.session['cart'] = {}
+        request.session.modified = True
 
         return render(request, 'success.html', {'order': order})
 
-    return render(request, 'checkoutpage.html', {'bag_items': bag_items, 'total_price': total_price})
+    # Render checkout page for GET requests
+    context = {
+        'bag_items': bag_items, 
+        'total_price': total_price
+    }
+    return render(request, 'checkoutpage.html', context)
 
 def lookbook(request):
     return render(request , 'lookbook.html')
