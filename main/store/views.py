@@ -225,14 +225,22 @@ def Checkout(request):
                 html_content = render_to_string('email.html', {'order': order})
                 text_content = strip_tags(html_content)
 
-                msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                # Create the connection explicitly to set a timeout
+                from django.core.mail import get_connection
+                connection = get_connection(timeout=5) # If it takes > 5s, it will move on
+
+                msg = EmailMultiAlternatives(
+                    subject, text_content, from_email, [to], 
+                    connection=connection
+                )
                 msg.attach_alternative(html_content, "text/html")
                 
-                # Use fail_silently=True here so the USER doesn't see a 500 error 
-                # even if the SMTP server is down or slow.
+                # fail_silently=True ensures the site doesn't crash if Gmail blocks you
                 msg.send(fail_silently=True) 
+            
             except Exception as email_err:
-                print(f"Email error: {email_err}") # This goes to your logs, not the user's screen
+                # We log this to the server console, but the user never sees it
+                print(f"Email Timeout or Connection Error: {email_err}")
 
             # 4. Success Actions
             request.session['cart'] = {}
