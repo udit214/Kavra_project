@@ -212,14 +212,19 @@ def Checkout(request):
         text_content = strip_tags(html_content) # Create plain-text version for backup
 
         # 3. Create the email object
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html") # Attach the high-end version
+        try:
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html") # Attach the high-end version
 
-        # 4. Send
-        msg.send(fail_silently=False)
-        # Clear the luxury bag
-        request.session['cart'] = {}
-        request.session.modified = True
+            # 4. Send
+            msg.send(fail_silently=False)
+            # Clear the luxury bag
+            request.session['cart'] = {}
+            request.session.modified = True
+        except Exception as e:
+            # This logs the error to your server console so you can read it,
+            # but it doesn't crash the page for the customer.
+            print(f"Email failed to send: {e}")
 
         return render(request, 'success.html', {'order': order})
 
